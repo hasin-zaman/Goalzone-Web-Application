@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      input {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Example</h1>
+    <form>
+      <input type="time" id="timeInput" name="time" value="22:00" />
+      <button type="button" onclick="getTime()">Get Time</button>
+    </form>
+    <script>
+      function getTime() {
+        const timeInput = document.getElementById("timeInput");
+        const timeValue = timeInput.value;
+        console.log("Time value: ", timeValue);
+      }
+    </script>
+  </body>
+</html>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      input {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Example</h1>
+    <form action="/form/submit" method="post">
+      <input type="time" name="time" step="60" value="22:00" />
+    </form>
+    <script>
+        function getTime() {
+          const timeInput = document.getElementById("timeInput");
+          const timeValue = timeInput.value;
+          console.log("Time value: ", timeValue);
+        }
+      </script>
+  </body>
+</html>

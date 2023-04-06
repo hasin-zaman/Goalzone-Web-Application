@@ -1,0 +1,39 @@
+.wrapper{
+  width: 100%;
+  min-height: 650px;
+  background-image: url("https://source.unsplash.com/1000x650/?ground,football");
+  background-size: cover;
+  box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper h1{
+  margin: 0;
+  padding-top: 20px;
+  text-align: center;
+  color: white;
+  font-size: 45px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+.cities {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding: 50px 0;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .wrapper{
+      max-height: 100%;
+    }
+    
+    .cities{
+        flex-direction: column;
+    }
+  }

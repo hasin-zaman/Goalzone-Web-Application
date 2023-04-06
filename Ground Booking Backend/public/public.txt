@@ -1,0 +1,2 @@
+// This folder is to store static files that do not chang dynamically and are servec directly to client. E.g: HTML/CSS/JS files, images, videos etc
+// Additionally you should create separate sub-directories for each type of file. Like sub-folder only for HTML files and so on.
