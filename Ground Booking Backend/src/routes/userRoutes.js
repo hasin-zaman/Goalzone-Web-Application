@@ -16,7 +16,7 @@ userRouter.get('/', home);
 userRouter.post('/users/signup', userSignUp)
 
 // READ / GET all users
-userRouter.get('/users', verifyToken, getAllUsers)
+userRouter.get('/users', getAllUsers)
 
 // READ / GET individual user
 userRouter.get('/users/login', userLogin)

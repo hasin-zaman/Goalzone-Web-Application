@@ -22,7 +22,7 @@ export default function City(){
       }, [])
 
     return(
-        <div className="wrapper">
+        <div className="wrapperCity">
             <h1>Choose Your City!</h1>
             <div className='cities'>
             {cities.length > 0 && (

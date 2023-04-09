@@ -10,17 +10,18 @@ import {
 } from 'react-router-dom';
 import City from './pages/city';
 import Login from './pages/login';
+import Signup from './pages/signup';
 import Home from './pages/home';
 
 function App() {
-
 
   return (
       <BrowserRouter>
       <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cities" element={<City />} />
-          <Route path="login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   )

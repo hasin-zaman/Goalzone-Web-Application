@@ -1,9 +1,9 @@
-.wrapperLogin{
+.wrapperSignup{
     width: 100%;
-    height: 650px;
+    height: 900px;
 }
 
-.login{
+.signup{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -13,51 +13,95 @@
     box-shadow: inset 400px -200px 300px rgb(8, 8, 8, 0.9), inset 600px -300px 400px rgb(8, 8, 8, 0.8), inset 0 0 0 1000px rgba(8, 8, 8, 0.45);
 }
 
-.loginForm{
+.signupForm{
     width: 25%;
-    height: 40%;
+    height: 80%;
     margin-left: 100px;
 }
 
-.loginForm h1{
+.signupForm h1{
     margin-bottom: 15px;
 }
 
-.loginForm h6{
+.signupForm h6{
     margin-bottom: 25px;
     color: rgba(132, 136, 132);
 }
 
-.loginForm .box{
+.box{
     background-color: rgba(132, 136, 132, 0.15);
     color: whitesmoke;
     border-radius: 8px;
     border: none;
     height: 35px;
-    width: 98%;
     margin: 2px 0 15px 0;
     padding-left: 10px;
+    font-size: 15px;
+    font-weight: 500;
 }
 
-.loginForm .box:focus{
+.large{
+    width: 96%;
+}
+
+.small{
+    width: 43%;
+}
+
+.box:focus{
     outline: 0.5px solid rgba(55, 255, 20, 0.5);
+}
+
+#firstName{
+    margin-right: 23px;
+}
+
+.toggleButton{
+    display: inline-block;
+    background-color: rgba(132, 136, 132, 0.15);
+    margin: 2px 0 10px 0;
+    overflow: auto;
 }
 
 label{
     margin: 0 0 10px 7px;
 }
 
-#linkSignup{
+#labelSmallBox{
+    margin-right: 116px;
+}
+
+#linkLogin{
     font-size: 11px;
     text-decoration: none;
     color: whitesmoke;
 }
 
-#linkSignup:hover{
+#linkLogin:hover{
     text-decoration: underline;
 }
 
-#loginButton{
+fieldset{
+    border: 1px solid rgba(132, 136, 132, 0.3);
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+fieldset legend{
+    font-size: 11px;
+    font-weight: 700;
+}
+
+input[type="radio"]{
+    accent-color: rgba(0, 128, 0, 0.7);
+}
+
+.gender{
+    font-size: 13px;
+    margin-right: 10px;
+}
+
+#signupButton{
     width: 50%;
     padding: 5px;
     font-size: 18px;
@@ -70,11 +114,11 @@ label{
     margin-top: 15px;
 }
 
-#loginButton:hover{
+#signupButton:hover{
     background-color: rgba(245, 245, 245, 0.7);
 }
   
-#loginButton:active {
+#signupButton:active {
     transform: scale(0.97);
     box-shadow: 0 3px 10px rgba(245, 245, 245, 0.2);
 }

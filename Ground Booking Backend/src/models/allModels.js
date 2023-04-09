@@ -229,19 +229,18 @@ const userSchema = mongoose.Schema(
             min: 2
         },
         age: {
-            type: Number,
-            required: true
+            type: Number
         },
         gender: {
             type: String,
-            enum: ['Male', 'Female']
+            enum: ['Male', 'Female'],
+            required: true
         },
         phone: {
             type: String,
             required: true,
             unique: true,
-            min: 11,
-            max: 11
+            min: 11
         },
         email: {
             type: String,
@@ -260,7 +259,22 @@ const userSchema = mongoose.Schema(
             type: String,
             enum: ['Player', 'Captain', 'Ground-in-charge', 'Admin'],
             required: true
-        }
+        },
+        position: {
+            type: String
+        },
+        teams: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Team'
+            }
+        ],
+        grounds: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Ground'
+            }
+        ]
     },
     {
         timestamps: true

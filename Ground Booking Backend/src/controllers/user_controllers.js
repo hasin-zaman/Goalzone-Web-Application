@@ -10,7 +10,6 @@ export async function home(req, res, next) {
 
 export async function userSignUp(req, res, next) {
     try {
-
         // check for duplicate email, return error message if true
         const userAlreadyExists = await User.findOne({ email: req.body.email });
 
@@ -83,7 +82,7 @@ export async function userLogin(req, res, next) {
 
         const token = jwt.sign({ user }, `${process.env.JWT_SECRET_KEY}`, { expiresIn: '1200s' });
 
-        res.status(200).json({ user, token });
+        res.status(200).json({ user: user, token: token });
 
     } catch (error) {
         res.status(500).json({ message: 'Something went wrong' })
