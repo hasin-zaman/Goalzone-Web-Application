@@ -1,12 +1,25 @@
 import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { useState } from 'react';
 
-export default function ColorToggleButton() {
+export default function ColorToggleButton(props) {
+
+  const [role, setRole]=useState("");
+
   const [alignment, setAlignment] = React.useState('web');
 
   const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+    }
+    
+    // setAlignment(newAlignment);
+  };
+
+  const handleToggle = e => {
+    setRole(e.target.value);
+    props.onToggleChange(e.target.value);
   };
 
   return (
@@ -17,9 +30,9 @@ export default function ColorToggleButton() {
       onChange={handleChange}
       aria-label="Platform"
     >
-      <ToggleButton value="Player" sx={{color: "whitesmoke"}}>Player</ToggleButton>
-      <ToggleButton value="Ground-in-charge" sx={{color: "whitesmoke"}}>Ground-in-charge</ToggleButton>
-      <ToggleButton value="Captain" sx={{color: "whitesmoke"}}>Captain</ToggleButton>
+      <ToggleButton name="role" value="Player" onClick={handleToggle} sx={{color: "whitesmoke"}} defaultChecked>Player</ToggleButton>
+      <ToggleButton name="role" value="Ground-in-charge" onClick={handleToggle} sx={{color: "whitesmoke"}}>Ground-in-charge</ToggleButton>
+      <ToggleButton name="role" value="Captain" onClick={handleToggle} sx={{color: "whitesmoke"}}>Captain</ToggleButton>
     </ToggleButtonGroup>
   );
 }

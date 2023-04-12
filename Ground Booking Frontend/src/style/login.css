@@ -78,3 +78,9 @@ label{
     transform: scale(0.97);
     box-shadow: 0 3px 10px rgba(245, 245, 245, 0.2);
 }
+
+.validation{
+    width: 25%;
+    height: 40%;
+    /* background-color: rgba(127, 255, 212, 0.123); */
+}
