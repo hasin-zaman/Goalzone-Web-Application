@@ -1,23 +1,21 @@
 {
-  "name": "webdevelopmentproject",
+  "name": "ground-booking-backend",
   "version": "1.0.0",
-  "description": "CRUD Assignment",
-  "main": "index.js",
-  "type": "module",
+  "description": "",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon server.js"
   },
-  "author": "Hamza Faisal",
+  "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.9.0",
-    "nodemon": "^2.0.20"
+    "mongoose": "^7.0.3"
   }
 }

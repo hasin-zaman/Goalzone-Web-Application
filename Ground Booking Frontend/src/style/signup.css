@@ -1,6 +1,6 @@
 .wrapperSignup{
     width: 100%;
-    height: 900px;
+    height: 1000px;
 }
 
 .signup{
@@ -34,7 +34,7 @@
     border-radius: 8px;
     border: none;
     height: 35px;
-    margin: 2px 0 15px 0;
+    margin-top: 2px;
     padding-left: 10px;
     font-size: 15px;
     font-weight: 500;
@@ -59,12 +59,13 @@
 .toggleButton{
     display: inline-block;
     background-color: rgba(132, 136, 132, 0.15);
-    margin: 2px 0 10px 0;
+    margin-top: 2px;
     overflow: auto;
 }
 
-label{
-    margin: 0 0 10px 7px;
+.signupForm label{
+    display: inline-block;
+    margin: 15px 0 0 7px;
 }
 
 #labelSmallBox{
@@ -83,8 +84,8 @@ label{
 
 fieldset{
     border: 1px solid rgba(132, 136, 132, 0.3);
-    padding: 8px;
-    margin-bottom: 10px;
+    padding: 3px;
+    margin: 15px 0 0 0;
 }
 
 fieldset legend{
@@ -98,7 +99,8 @@ input[type="radio"]{
 
 .gender{
     font-size: 13px;
-    margin-right: 10px;
+    padding-right: 10px;
+    padding-bottom: 3px;
 }
 
 #signupButton{
@@ -111,7 +113,7 @@ input[type="radio"]{
     border: none;
     cursor: pointer;
     border-radius: 15px;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 #signupButton:hover{
@@ -121,4 +123,25 @@ input[type="radio"]{
 #signupButton:active {
     transform: scale(0.97);
     box-shadow: 0 3px 10px rgba(245, 245, 245, 0.2);
+}
+
+#errorFirstName{
+    display: inline-block;
+}
+
+#errorLastName{
+    display: inline-block;
+    margin-left: 58.5px;
+}
+
+#errorFirstName:empty + #errorLastName{
+    margin-left: 181.5px;
+}
+
+#errorFirstName:empty{
+    display: none;
+}
+
+#errorLastName:empty{
+    display: none;
 }
