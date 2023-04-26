@@ -1,6 +1,7 @@
 .wrapperSignup{
     width: 100%;
     height: 1000px;
+    backdrop-filter: blur(10px);
 }
 
 .signup{

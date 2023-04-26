@@ -1,6 +1,7 @@
 .wrapperLogin{
     width: 100%;
     height: 650px;
+    backdrop-filter: blur(10px);
 }
 
 .login{

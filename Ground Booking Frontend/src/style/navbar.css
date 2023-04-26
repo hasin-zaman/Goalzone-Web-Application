@@ -1,0 +1,160 @@
+.navBar{
+    display: flex;
+    /* background-color: rgba(240, 248, 255, 0.041); */
+}
+
+.list{
+    display: flex;
+    margin-top: auto;
+    list-style: none;
+}
+
+.first .navLink{
+    margin-right: 20px;
+    padding-bottom: 9px;
+    text-decoration: none;
+    color: rgba(132, 136, 132);
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+}
+
+.first .navLink:hover{
+    color: whitesmoke;
+    border-bottom: 2px solid whitesmoke;
+    cursor: pointer;
+}
+
+.first .active{
+    color: whitesmoke;
+    border-bottom: 2px solid whitesmoke;
+}
+
+.first .active:hover{
+    cursor: default;
+}
+
+#dropdown{
+    position: relative;
+    top:5px;
+    font-weight: 900;
+}
+
+.dropdownMenu{
+    display: none;
+    background-color: rgba(132, 136, 132, 0.15);
+    position: absolute;
+    top: 99px;
+    left: 332px;
+    list-style: none;
+    padding: 0;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+.navDropdown:hover + .dropdownMenu, .dropdownMenu:hover{
+    display: block;
+}
+
+.dropdownBox{
+    padding: 15px 13px 15px 12px;
+}
+
+.dropdownBox:hover{
+    background-color: rgba(132, 136, 132, 0.3);
+}
+
+.dropdownLink{
+    text-decoration: none;
+    color: whitesmoke;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.icon{
+    position: relative;
+    top: 2px;
+}
+
+.second{
+    margin-left: auto;
+    margin-right: 30px;
+    position: relative;
+    bottom: 6px;
+}
+
+.second .navBox{
+    margin-left: 30px;
+}
+
+.second .navBox:hover{
+    transition: 0.8s;
+    transform: scale(1.4);
+}
+
+#payment{
+    color: whitesmoke;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.searchBox{
+    list-style: none;
+}
+
+#search{
+    position: relative;
+    top: 2px;
+    background-color: rgba(132, 136, 132, 0.15);
+    color: whitesmoke;
+    border-radius: 10px;
+    border: none;
+    height: 22px;
+    width: 150px;
+    padding: 4px 0 4px 10px;
+    font-size: 17px;
+    font-weight: 550;
+    transition: 0.8s ease-in-out;
+}
+
+#search::placeholder{
+    font-size: 15px;
+    font-weight: 500;
+}
+
+#search:focus{
+    outline: none;
+    width: 200px;
+    background-color: rgba(132, 136, 132, 0.3);
+}
+
+.dropdownMenu2{
+    visibility: hidden;
+    transition: all 0.3s ease-in;
+    background-color: rgba(132, 136, 132, 0.15);
+    position: absolute;
+    top: 40px;
+    right: 2px;
+    list-style: none;
+    padding: 0;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+.dropdownBox2{
+    padding: 15px 13px 15px 20px;
+}
+
+.dropdownBox2:hover{
+    background-color: rgba(132, 136, 132, 0.3);
+    cursor: pointer;
+}
+
+.dropdownLink2{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+.navAccount:focus + .dropdownMenu2{
+    visibility: visible;
+}

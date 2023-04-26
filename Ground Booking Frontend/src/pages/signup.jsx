@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../style/signup.css";
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -34,7 +34,7 @@ export default function Signup(){
 
     const [isLoading, setIsLoading]=useState(false);
     const [message, setMessage]=useState(null);
-    const [messageColor, setMessageColor]=useState("green");
+    const navigate=useNavigate();
 
     const formik=useFormik({
         initialValues: initialValues,
@@ -45,12 +45,10 @@ export default function Signup(){
                 const {reEnterPassword, ...data}=values;
                 const response=await axios.post("http://localhost:3000/users/signup", data);
                 setMessage(response.data.message);
-                setMessageColor("green");
-                console.log(response.data);
+                
+                navigate('/login');
             } catch (error) {
                 setMessage(error.response.data.message);
-                setMessageColor("red");
-                console.log(error.response.data);
             } finally{
                 setIsLoading(false);
             }
@@ -126,7 +124,6 @@ export default function Signup(){
                     </button>
                     {message==="Account successfully registered!" ? <div className="message" style={{color:"green"}}>{message}</div> : <div className="message" style={{color:"red"}}>{message}</div>}
                 </form>
-                <div className="logo" />
             </div>
         </div>
     )

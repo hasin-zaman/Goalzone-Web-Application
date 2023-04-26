@@ -3,19 +3,26 @@ const mongoose=require('mongoose');
 const citySchema = mongoose.Schema(
     {
         cityId: {
-            type: Number,
+            type: String,
             required: true,
             unique: true,
+            trim: true
         },
         cityName: {
             type: String,
             required: true,
-            unique: true
+            unique: true,
+            trim: true
+        },
+        image:{
+            type: String,
+            required:true,
+            trim:true
         },
         areas: [
             { 
                 type: String,
-                unique: true
+                trim: true
             }
         ],
         grounds: [

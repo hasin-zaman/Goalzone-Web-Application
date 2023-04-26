@@ -1,0 +1,64 @@
+footer{
+    display: flex;
+    background: linear-gradient(110deg, black 60%, #080808 60%);
+    justify-content: space-between;
+}
+
+.footerLogoContent{
+    margin: auto 0 auto 150px;
+}
+
+.footerLogoBox{
+    width: 80px;
+    height: 110px;
+    padding: 30px 5px 4px 40px;
+}
+
+.socialMediaLinks{
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.socialMediaIcon{
+    padding-right: 5.5px;
+    color: #04e6e6;
+}
+
+.footerContent{
+    display: flex;
+    margin-left: auto;
+}
+
+.footerList{
+    list-style: none;
+    padding: 0;
+    margin: 60px 0;
+}
+
+.firstList{
+    margin-right: 250px;
+}
+
+.secondList{
+    margin-right: 150px;
+}
+
+.footerTitle{
+    font-size: 23px;
+    font-weight: 600px;
+}
+
+.footerBox{
+    padding: 10px 15px 8px 0;
+}
+
+.footerLink{
+    color: whitesmoke;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.footerLink:hover{
+    text-decoration: underline;
+}

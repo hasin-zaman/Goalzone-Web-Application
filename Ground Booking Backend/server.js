@@ -14,8 +14,7 @@ app.use(
 
 const UserRoutes=require('./src/routes/userRoutes');
 // const TeamRoutes=require('./routes/teamRoutes');
-// const CityRoutes=require('./routes/cityRoutes');
-// const AreaRoutes=require('./routes/areaRoutes');
+const CityRoutes=require('./src/routes/cityRoutes');
 // const GroundRoutes=require('./routes/groundRoutes');
 // const SlotRoutes=require('./routes/slotRoutes');
 // const {verifyToken}=require('./helpers/authHelpers');
@@ -43,9 +42,7 @@ app.use('/users', UserRoutes);
 
 // app.use('/team', TeamRoutes);
 
-// app.use('/city', CityRoutes);
-
-// app.use('/', AreaRoutes);
+app.use('/cities', CityRoutes);
 
 // app.use('/', GroundRoutes);
 

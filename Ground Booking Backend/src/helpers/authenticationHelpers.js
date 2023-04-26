@@ -5,6 +5,13 @@ async function validateEmail(email) {
     return emailRegex.test(email);
 }
 
+
+//accepts strings lh, isl, khi1
+async function validateCityId(cityId) {
+    const regex = /^[a-z]{2,3}\d{0,1}$/;
+    return regex.test(cityId);
+}
+
 // middleware function
 const verifyAccessToken=(req,res,next)=>{
 
@@ -26,6 +33,7 @@ const verifyAccessToken=(req,res,next)=>{
 
 module.exports={
     validateEmail,
+    validateCityId,
     verifyAccessToken
 };
 
