@@ -30,8 +30,9 @@ export default function Login(){
                         const response=await axios.post("http://localhost:3000/users/login", values);
                         localStorage.setItem("accessToken", response.data.accessToken);
                         localStorage.setItem("refreshToken", response.data.refreshToken);
+                        localStorage.setItem("_id", response.data.user._id);
                         localStorage.setItem("userId", response.data.user.userId);
-                        localStorage.setItem("role", response.data.user.userId);
+                        localStorage.setItem("role", response.data.user.role);
                         localStorage.setItem("profileImage", response.data.user.profileImage);
             
                         setMessage(response.data.message);

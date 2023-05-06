@@ -10,12 +10,12 @@ router.post('/login', userLogin);
 
 router.get('/', getAllUsers);
 
-router.get('/:id', verifyAccessToken, getUser);
+router.get('/:userId', getUser);
 
-router.put('/:id', verifyAccessToken, updateUser);
+router.put('/:userId', updateUser);
 
-router.delete('/:id', deleteUser);
+router.delete('/:userId', deleteUser);
 
-router.delete('/', verifyAccessToken, deleteAll);
+router.delete('/', deleteAll);
 
 module.exports=router;

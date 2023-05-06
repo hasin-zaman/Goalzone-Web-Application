@@ -13,23 +13,26 @@ async function validateCityId(cityId) {
 }
 
 // middleware function
-const verifyAccessToken=(req,res,next)=>{
+function verifyAccessToken(roles){
+    
+    return (req,res,next)=>{
 
     const authHeader=req.headers['authorization'];
     const token=authHeader && authHeader.split(' ')[1];//Header is made up of 'Bearer Token'
-    
+
     if(token==null){
         return res.sendStatus(401);//Unauthorized
     }
 
     jwt.verify(token, process.env.SECRET_ACCESS_TOKEN, (error, user)=>{
-        if(error){
+
+        if(error || (req.params.userId && (req.params.userId!=user.userId) && user.role!="Admin") || (roles && (!roles.includes(user.role)))){
             return res.sendStatus(403);//Forbidden
         }
         req.user=user;
         next()
     });
-};
+}}
 
 module.exports={
     validateEmail,

@@ -1,4 +1,3 @@
-import '../style/home.css';
 import NavBar from '../components/navbar';
 import Footer from '../components/footer';
 import MainSectionTeams from '../components/mainSectionTeams';

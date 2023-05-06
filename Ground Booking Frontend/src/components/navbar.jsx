@@ -4,10 +4,11 @@ import Logo from './logo';
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { IoMdArrowDropdown } from 'react-icons/io'
 import { AiFillHome } from 'react-icons/ai'
-import { FaQuestionCircle, FaInfoCircle, FaCalendarCheck, FaSignInAlt, FaAddressCard, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'
+import { FaQuestionCircle, FaInfoCircle, FaCalendarCheck, FaSignInAlt, FaAddressCard, FaUserCircle, FaSignOutAlt, FaUserFriends } from 'react-icons/fa'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMoneyCheckDollar, faAddressCard } from '@fortawesome/free-solid-svg-icons'
+import { faMoneyCheckDollar, faAddressCard, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import NavAccount from './navAccount';
+import { GroupsRounded } from '@mui/icons-material';
 
 export default function NavBar() {
 
@@ -25,8 +26,9 @@ export default function NavBar() {
         <div className='test' style={{backgroundImage: url}}></div>
         <Logo style={{width: "70px", height: "100px", margin: "15px 0 0 20px"}}/>
         <ul className='list first'>
-            <NavLink to="/" className='navLink'><li className='navBox activeBox'><AiFillHome className='icon' /> Home</li></NavLink>
-            <NavLink to="/booking" className='navLink'><li className='navBox'><FaCalendarCheck className='icon'/> Booking</li></NavLink>
+            <NavLink to="/" className='navLink'><li className='navBox'><AiFillHome className='icon' /> Home</li></NavLink>
+            <NavLink to="/booking/cities" className='navLink'><li className='navBox'><FaCalendarCheck className='icon'/> Book Ground</li></NavLink>
+            <NavLink to="/teams" className='navLink'><li className='navBox'><FontAwesomeIcon icon={faUserGroup} style={{ }}/> Find Team</li></NavLink>
             <NavLink to="/about" className='navLink navDropdown' tabIndex="1"><li className='navBox'><FaInfoCircle className='icon' /> About us
             <IoMdArrowDropdown className='icon' id='dropdown' /></li></NavLink>
             <ul className='dropdownMenu'>
@@ -43,7 +45,7 @@ export default function NavBar() {
                 <NavAccount />
             </li>
             <ul className='dropdownMenu2'>
-                {localStorage.getItem("userId") ? <Link to="/users:id" className='dropdownLink2'><li className='dropdownBox2' style={{borderBottom:"1px solid grey", borderTop:"1px solid grey"}}><FaUserCircle className='icon'/> Profile</li></Link> : <Link to="/login" className='dropdownLink2'><li className='dropdownBox2' style={{borderBottom:"1px solid grey", borderTop:"1px solid grey"}}><FaSignInAlt className='icon'/> Login</li></Link>}
+                {localStorage.getItem("userId") ? <Link to={`/users/${localStorage.getItem("userId")}`} className='dropdownLink2'><li className='dropdownBox2' style={{borderBottom:"1px solid grey", borderTop:"1px solid grey"}}><FaUserCircle className='icon'/> Profile</li></Link> : <Link to="/login" className='dropdownLink2'><li className='dropdownBox2' style={{borderBottom:"1px solid grey", borderTop:"1px solid grey"}}><FaSignInAlt className='icon'/> Login</li></Link>}
 
                 {localStorage.getItem("userId") ? <li className='dropdownBox2' style={{paddingBottom:"15px", borderBottomLeftRadius:"7px", borderBottomRightRadius:"7px"}}><div onClick={logout} className='dropdownLink2'><FaSignOutAlt className='icon'/> Logout</div></li> : 
                     <Link onClick={logout} to="/signup" className='dropdownLink2'><li className='dropdownBox2' style={{paddingBottom:"15px", borderBottomLeftRadius:"7px", borderBottomRightRadius:"7px"}}><FaAddressCard className='icon' /> Sign up</li></Link>}   

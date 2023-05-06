@@ -33,15 +33,28 @@ const userSchema = mongoose.Schema(
             min: 10,
             trim: true
         },
+        phoneStatus: {
+            type: String,
+            enum: ['Public', 'Private'],
+            required: true
+        },
         email: {
             type: String,
             required: true,
             unique: true,
         },
+        emailStatus: {
+            type: String,
+            enum: ['Public', 'Private'],
+            required: true
+        },
         password: {
             type: String,
             required: true,
             min: 6
+        },
+        bio: {
+            type: String
         },
         profileImage:{
             type: String,
@@ -64,8 +77,20 @@ const userSchema = mongoose.Schema(
         },
         teams: [
             {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Team'
+                _id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Team'
+                },
+                joinDate: {
+                    type: Date,
+                    min: '2000-01-01',
+                    max: new Date()
+                },
+                endDate: {
+                    type: Date,
+                    min: '2000-02-01',
+                    max: new Date()
+                }
             }
         ],
         grounds: [

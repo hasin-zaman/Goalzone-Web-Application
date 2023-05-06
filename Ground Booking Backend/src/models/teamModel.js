@@ -3,48 +3,77 @@ const mongoose=require('mongoose');
 const teamSchema = mongoose.Schema(
     {
         teamId: {
-            type: Number,
+            type: String,
             required: true,
-            unique: true
+            unique: true,
+            lowercase: true
         },
         teamName: {
             type: String,
             required: true,
+            min: 2,
+            trim: true
+        },
+        slogan: {
+            type: String,
+            trim: true
+        },
+        establishedInYear: {
+            type: String,
+            required: true,
+            min: 1947,
+            max: new Date().getFullYear
         },
         phone: {
             type: String,
             required: true,
             unique: true,
-            min: 11,
+            min: 10,
+            trim: true
         },
         email: {
             type: String,
-            required: [true, 'Please enter your email'],
-            unique: [true, 'This email is already in use']
+            required: true,
+            unique: true,
+            trim: true
         },
         profileImage: {
             type: String,
-            required: true
+            trim: true
         },
         coverImage: {
-            type: String
+            type: String,
+            trim: true
         },
         facebookHandle: {
-            type: String
+            type: String,
+            trim: true
         },
         instaHandle: {
-            type: String
+            type: String,
+            trim: true
         },
         captain: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
         },
         players: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User'
             }
-        ]
+        ],
+        requests: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        ],
+        status: {
+            type: String,
+            enum: ['Active', 'Inactive'],
+            required: true
+        }
     },
     {
         timestamps: true

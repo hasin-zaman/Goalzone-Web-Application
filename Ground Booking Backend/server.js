@@ -13,9 +13,9 @@ app.use(
 )
 
 const UserRoutes=require('./src/routes/userRoutes');
-// const TeamRoutes=require('./routes/teamRoutes');
+const TeamRoutes=require('./src/routes/teamRoutes');
 const CityRoutes=require('./src/routes/cityRoutes');
-// const GroundRoutes=require('./routes/groundRoutes');
+const GroundRoutes=require('./src/routes/groundRoutes');
 // const SlotRoutes=require('./routes/slotRoutes');
 // const {verifyToken}=require('./helpers/authHelpers');
 const mongoose=require('mongoose');
@@ -40,11 +40,11 @@ app.get('/',(req,res)=>{
 
 app.use('/users', UserRoutes);
 
-// app.use('/team', TeamRoutes);
+app.use('/teams', TeamRoutes);
 
 app.use('/cities', CityRoutes);
 
-// app.use('/', GroundRoutes);
+app.use('/cities/:id/grounds', GroundRoutes);
 
 // app.use('/', SlotRoutes);
 

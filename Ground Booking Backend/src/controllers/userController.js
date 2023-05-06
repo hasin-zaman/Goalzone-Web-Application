@@ -1,7 +1,7 @@
 const jwt=require('jsonwebtoken');
 const bcrypt=require('bcrypt');
 const User=require('../models/userModel');
-const { userAuthSchema }=require('../helpers/userAuthenticationSchema');
+const { userAuthSchema }=require('../helpers/userAuthSchema');
 const { validateEmail }=require('../helpers/authenticationHelpers.js');
 
 async function userSignup(req, res){
@@ -22,13 +22,11 @@ async function userSignup(req, res){
         //checking if email is of valid format
         const isValidEmail = await validateEmail(result.email);
         if (!isValidEmail) {
-            return res.status(400).json({ message: "Invalid Email."});
+            return res.status(400).json({ message: "Invalid email format."});
         }
-
 
         //hashing password to store through bcrypt
         const hashedPassword=await bcrypt.hash(result.password, 10);
-
 
         //getting id of last User registered to create new id for new user
         var lastId=0;
@@ -39,7 +37,6 @@ async function userSignup(req, res){
             lastId=jsonObj.userId;
         }
 
-
         //creating new user
         const user=await User.create({
             userId: lastId+1,
@@ -47,11 +44,12 @@ async function userSignup(req, res){
             lastName: result.lastName,
             gender: result.gender,
             phone: result.phone,
+            phoneStatus: "Private",
             email: result.email,
+            emailStatus: "Private",
             password: hashedPassword,
             role: result.role
         });
-
 
         //generating tokens
         const accessToken=jwt.sign({userId: user.userId, role: user.role}, process.env.SECRET_ACCESS_TOKEN, {expiresIn: "2h"});
@@ -63,7 +61,7 @@ async function userSignup(req, res){
     }
 }
 
-async function userLogin(req, res, next) {
+async function userLogin(req, res) {
     try {
         //checking if user exists
         const user = await User.findOne({ email: req.body.email });
@@ -74,7 +72,7 @@ async function userLogin(req, res, next) {
         //checking if passwords match
         const isMatch = await bcrypt.compare(req.body.password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Incorrect password.'});
+            return res.status(400).json({message: 'Incorrect password.'});
         }
 
         //generating tokens
@@ -83,27 +81,27 @@ async function userLogin(req, res, next) {
 
         res.status(200).send({message: "Successfully logged in!", user, accessToken, refreshToken});
     } catch (error) {
-        res.status(500).json({ message: 'Unable to login.'})
+        res.status(500).json({message: 'Unable to login.'})
     }
 }
 
-async function getAllUsers(req, res, next) {
+async function getAllUsers(req, res) {
     try {
         //finding all users
         const users = await User.find({});
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ message: 'Unable to get users'})
+        res.status(500).json({message: 'Unable to get users'})
     }
 }
 
-const getUser = async(req,res)=>{
+const getUser = async(req, res)=>{
     try {
         //parsing string req.params to int as userId is stored as int
-        const userId=parseInt(req.params.id);
+        const userId=parseInt(req.params.userId);
 
         //finding and checking if user exists
-        const user=await User.findOne({userId: userId});
+        const user=await User.findOne({userId: userId}).populate("teams._id", "teamId teamName profileImage captain");
         if(!user){
             return res.status(404).json({message: "User with id " + userId + " does not exist"})
         }
@@ -114,10 +112,10 @@ const getUser = async(req,res)=>{
     }
 }
 
-async function updateUser(req, res, next) {
+async function updateUser(req, res) {
     try {
         //parsing string req.params to int as userId is stored as int
-        const userId=parseInt(req.params.id);
+        const userId=parseInt(req.params.userId);
 
         //checking if user exists
         let user=await User.findOne({userId: userId});
@@ -169,34 +167,34 @@ async function updateUser(req, res, next) {
         const updatedUser = await User.findOne({userId: userId});
         res.status(200).json(updatedUser);
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({message: error.message })
     }
 }
 
-async function deleteUser(req, res, next) {
+async function deleteUser(req, res) {
     try {
         //parsing string req.params to int as userId is stored as int
-        const userId=parseInt(req.params.id);
+        const userId=parseInt(req.params.userId);
 
         const user = await User.findOneAndDelete({userId: userId});
 
         if (!user) {
-            return res.status(404).json({ message: "User with id " + userId + " was not found."});
+            return res.status(404).json({message: "User with id " + userId + " was not found."});
         }
 
         res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({ message: error.message})
+        res.status(500).json({message: error.message})
     }
 }
 
-async function deleteAll(req, res, next) {
+async function deleteAll(req, res) {
     try {
         //deleting all users for testing purposes
         const deletedUsers = await User.deleteMany({});
         res.status(200).json(deletedUsers)
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({message: error.message })
     }
 }
 

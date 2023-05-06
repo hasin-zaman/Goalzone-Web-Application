@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FaUser } from 'react-icons/fa';
+import userProfile from '../assets/userProfile.png'
 
 const AccountBox=styled.div`
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-size: 100% 100%;
+    background-size: contain;
     background-repeat: no-repeat;
     color: whitesmoke;
     font-size: 22px;
@@ -23,7 +24,12 @@ export default function NavAccount() {
 
     return (
         <div>
-            {localStorage.getItem("profileImage") && localStorage.getItem("profileImage")!='undefined' ? <AccountBox style={{backgroundImage: url}}/> : <AccountBox><FaUser /></AccountBox>}
+            {localStorage.getItem("userId") ? 
+            (localStorage.getItem("profileImage")!='undefined' 
+            ? <AccountBox style={{backgroundImage: url}}/> 
+            : <AccountBox style={{backgroundImage: `url(${userProfile})`}}/>) 
+            : 
+            <AccountBox><FaUser /></AccountBox>}
         </div>  
     );
 }

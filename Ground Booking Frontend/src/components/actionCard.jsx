@@ -5,19 +5,18 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 
-export default function ActionAreaCard({city, image}) {
+export default function ActionAreaCard({title, image, link}) {
   return (
-    <Card sx={{ maxWidth: 345, backgroundColor: "#181818", color: "#FBFFFF"}}>
-      <CardActionArea>
+    <Card sx={{ width: 300, height: 270, backgroundColor: "#181818", color: "whitesmoke", marginRight: "50px", borderRadius: "5px"}}>
+      <CardActionArea href={link}>
         <CardMedia
           component="img"
           height="200"
           image={image}
-          alt="Karachi"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            {city}
+            {title}
           </Typography>
         </CardContent>
       </CardActionArea>

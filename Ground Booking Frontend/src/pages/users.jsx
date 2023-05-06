@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import MUITooltip from '../components/muiTooltip';
 
 const Page=styled.div`
 width: 100%;
@@ -69,7 +69,7 @@ export default function Users() {
 
     const getUsers = async () => {
         try {
-            const res=await axios.get("http://localhost:3000/users")
+            const res=await axios.get("http://localhost:3000/users", {headers: {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`}})
             setUsers(res.data);
             console.log(res.data);
         } catch (error) {
@@ -132,8 +132,8 @@ export default function Users() {
                         <Data onClick={()=>getUser(user)}>{user.phone}</Data>
                         <Data onClick={()=>getUser(user)}>{user.email}</Data>
                         <Data onClick={()=>getUser(user)}>{user.role}</Data>
-                        <Data><Button onClick={()=>updateUser(user)} style={{color: "lightseagreen"}}><FaEdit /></Button></Data>
-                        <Data><Button onClick={()=>deleteUser(user)}><FaTrash /></Button></Data>
+                        <Data><MUITooltip icon="edit" color="primary" title="Edit user." onClick={()=>updateUser(user)}/></Data>
+                        <Data><MUITooltip icon="delete" color="error" title="Delete user." onClick={()=>deleteUser(user)}/></Data>
                     </Row>
                     </tbody>
                 );
