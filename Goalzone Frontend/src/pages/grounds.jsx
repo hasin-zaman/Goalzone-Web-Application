@@ -39,7 +39,7 @@ export default function Grounds() {
   const getAllGrounds = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/cities/${params.cityId}/grounds`,
+        `http://localhost:3000/countries/${params.countryId}/cities/${params.cityId}/grounds`,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,

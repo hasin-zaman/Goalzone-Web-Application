@@ -1,4 +1,4 @@
-const Country=require('../models/cityModel');
+const Country=require('../models/countryModel');
 const City=require('../models/cityModel');
 const Ground=require('../models/groundModel');
 const User=require('../models/userModel');
@@ -13,7 +13,7 @@ const registerGround = async (req, res) => {
             return res.status(404).json({message: "Country not found."})//Not Found
         }
 
-        //checking if cityId correct
+        //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
             return res.status(404).json({message: "City not found."})//Not Found
@@ -71,11 +71,11 @@ const getAllGrounds = async (req, res, next) => {
             return res.status(404).json({message: "City not found."})//Not Found
         }
 
-        const grounds = city.grounds;
+        const grounds = city.grounds.filter((ground)=>ground.status==="Active");
     
         res.status(200).json(grounds);
     } catch (error) {
-        res.status(500).json({ message: 'Unable to get grounds.'});
+        res.status(500).json({message: 'Unable to get grounds.'});
     }
 }
 
@@ -89,7 +89,7 @@ const getGround = async (req, res, next) => {
 
       const city = await City.findOne({ cityId: req.params.cityId }).populate('grounds');
       if (!city) {
-        return res.status(404).json({ message: 'City not found.' });
+        return res.status(404).json({message: 'City not found.'});
       }
   
       const ground = city.grounds.find(
@@ -97,48 +97,93 @@ const getGround = async (req, res, next) => {
       );
   
       if (!ground) {
-        return res.status(404).json({ message: 'Ground not found or not active.' });
+        return res.status(404).json({message: 'Ground not found or not active.'});
       }
   
       res.status(200).json(ground);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({message: error.message});
     }
 }
 
 const updateGround = async (req, res) => {
     try {
-      const groundId = req.params.groundId;
-      const updatedField = req.body.updatedField;
-  
-      const ground = await Ground.findOneAndUpdate({ groundId, status: 'Active' });
-      if (!ground) {
-        return res.status(404).json({ message: 'Ground not found or not active.' });
-      }
-  
-      ground.fieldToBeUpdated = updatedField; 
-  
-      await ground.save();
-  
-      res.status(200).json({ message: 'Ground updated successfully.' });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  };
-
-const deleteGround = async (req, res, next) => {
-    try {
-        const city = await City.findOneAndDelete({cityId: req.params.id});
-        
-        if (!city) {
-            return res.status(404).json({ message: "This city does not exist."});
+        const country=await Country.findOne({countryId: req.params.countryId});
+        if(!country){
+              return res.status(404).json({message: "Country not found."})//Not Found
         }
 
-        res.status(200).json({message: "City successfully deleted!", city});
+        const city=await City.findOne({cityId: req.params.cityId}).populate('grounds');
+        if (!city || city.grounds.length == 0) {
+            return res.status(404).json({message: 'City not found or no grounds in the city.'});
+        }
+
+        let ground = city.grounds.find((ground) => ground.groundId === req.params.id);
+        if (!ground) {
+            return res.status(404).json({message: 'Ground not found.'});
+        }
+
+        let incharge;
+        if (req.body.inchargeId != ground.incharge.userId) {
+            incharge = await User.findOne({userId: req.body.inchargeId});
+        }
+
+        ground.groundName = req.body.groundName || ground.groundName;
+        ground.establishedInYear = req.body.establishedInYear || ground.establishedInYear;
+        ground.type = req.body.type || ground.type;
+        ground.address = req.body.address || ground.address;
+        ground.mapLink = req.body.mapLink || ground.mapLink;
+        ground.mapImage = req.body.mapImage || ground.mapImage;
+        ground.additionalInfo = req.body.additionalInfo || ground.additionalInfo;
+        ground.webUrl = req.body.webUrl || ground.webUrl;
+        ground.profileImage = req.body.profileImage || ground.profileImage;
+        ground.coverImage = req.body.coverImage || ground.coverImage;
+        ground.facebookHandle = req.body.facebookHandle || ground.facebookHandle;
+        ground.instaHandle = req.body.instaHandle || ground.instaHandle;
+        ground.phone = req.body.phone || ground.phone;
+        ground.phoneStatus = req.body.phoneStatus || "Public";
+        ground.email = req.body.email || ground.email;
+        ground.emailStatus = req.body.emailStatus || "Public";
+        ground.incharge = incharge != null ? incharge._id : ground.incharge;
+        ground.status = req.body.status || "Active";
+
+        await ground.save();
+
+        const updatedGround = await Ground.findOne({groundId: req.params.id});
+
+        res.status(200).json({message: "Ground successfully updated!", updatedGround});
     } catch (error) {
-        res.status(500).json({ message: error.message});
+        res.status(500).json({message: error.message});
     }
-}
+};
+
+const deleteGround = async (req, res) => {
+    try {
+        const country=await Country.findOne({countryId: req.params.countryId});
+        if(!country){
+              return res.status(404).json({message: "Country not found."})
+        }
+
+        const city = await City.findOne({cityId: req.params.cityId}).populate('grounds');
+        if (!city) {
+            return res.status(404).json({message: 'City not found'});
+        }
+
+        const groundIndex = city.grounds.indexOf(city.grounds.find(ground => ground.groundId === req.params.id));
+        if (groundIndex === -1) {
+            return res.status(404).json({message: 'Ground not found in the city'});
+        }
+
+        city.grounds.splice(groundIndex, 1);
+        await city.save();
+
+        const ground=await Ground.findOneAndDelete({groundId: req.params.id});
+
+        res.status(200).json({message: 'Ground deleted successfully', ground});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
 
 module.exports={
     registerGround,

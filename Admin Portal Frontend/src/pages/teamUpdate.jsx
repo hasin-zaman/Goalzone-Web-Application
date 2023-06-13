@@ -37,7 +37,7 @@ export default function TeamUpdate() {
   const updateTeam = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.put(`http://localhost:3001/teams/${params.id}`, values, {
+      const res = await axios.put(`http://localhost:3001/teams/${params.teamId}`, values, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);
@@ -54,7 +54,7 @@ export default function TeamUpdate() {
 
   const getTeam = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/teams/${params.id}`, {
+      const res = await axios.get(`http://localhost:3001/teams/${params.teamId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);
@@ -90,7 +90,7 @@ export default function TeamUpdate() {
           >
             <h2 style={{color: 'whitesmoke'}}>Form</h2>
             {teamData && (
-            <Formik initialValues={teamData} validationSchema={validationSchema} onSubmit={updateTeam}>
+            <Formik initialValues={{ ...teamData, captainId: teamData.captain.userId }} validationSchema={validationSchema} onSubmit={updateTeam}>
               <Form style={{ width: '100%', marginTop: '20px' }}>
                 <CustomTextField name="captainId" label="Captain's User Id" />
                 <CustomTextField name="teamName" label="Team Name" />

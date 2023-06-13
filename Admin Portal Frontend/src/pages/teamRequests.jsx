@@ -111,7 +111,7 @@ export default function TeamRequests() {
 
   const approveRequest=async (request)=>{
     try {
-      const res=await axios.put(`http://localhost:3000/teams/${params.id}/approve/${request.userId}/${localStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`}});
+      const res=await axios.put(`http://localhost:3000/teams/${params.teamId}/approve/${request.userId}/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       setTeam(res.data.updatedTeam)
       console.log(res.data)
       alert(res.data.message);
@@ -122,7 +122,7 @@ export default function TeamRequests() {
 
   const declineRequest=async (request)=>{
     try {
-      const res=await axios.put(`http://localhost:3000/teams/${params.id}/decline/${request.userId}/${localStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`}});
+      const res=await axios.put(`http://localhost:3000/teams/${params.teamId}/decline/${request.userId}/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       setTeam(res.data.updatedTeam)
       console.log(res.data)
     } catch (error) {
@@ -132,7 +132,7 @@ export default function TeamRequests() {
 
   const getTeam=async () =>{
     try {
-      const res=await axios.get(`http://localhost:3000/teams/${params.id}`, {headers: {"Authorization": `Bearer ${localStorage.getItem("accessToken")}`}});
+      const res=await axios.get(`http://localhost:3000/teams/${params.teamId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       console.log(res.data);
       setTeam(res.data);
     } catch (error) {

@@ -37,7 +37,7 @@ export default function RegisterGround(){
             setIsLoading(true);
             try {
                 const {...data}=values;
-                const response=await axios.post(`http://localhost:3000/cities/${params.cityId}/grounds/${sessionStorage.getItem('userId')}`, data);
+                const response=await axios.post(`http://localhost:3000/countries/${params.countryId}/cities/${params.cityId}/grounds/${sessionStorage.getItem('userId')}`, data);
                 setMessage(response.data.message);
                 setColor('green');
                 

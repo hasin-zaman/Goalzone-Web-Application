@@ -139,7 +139,7 @@ export default function Team() {
 
   const sendRequest=async ()=>{
     try {
-      const res=await axios.put(`http://localhost:3000/teams/${params.id}/send/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
+      const res=await axios.put(`http://localhost:3000/teams/${params.teamId}/send/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       console.log("Send: ", res.data)
       setButton("Request Sent")
     } catch (error) {

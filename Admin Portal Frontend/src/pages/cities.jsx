@@ -5,7 +5,7 @@ import MUITooltip from '../components/muiTooltip';
 import Drawer from '../components/drawer';
 import Header from '../components/Header';
 import AlertDialog from '../components/alertDialog';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Page = styled.div`
   width: 100%;
@@ -59,6 +59,7 @@ export default function Cities() {
   const [selectedCity, setSelectedCity] = useState(null);
 
   const navigate=useNavigate();
+  const params=useParams();
 
   const getAllCities = async () => {
     try {
@@ -71,20 +72,20 @@ export default function Cities() {
   };
 
   const addCity = async () => {
-    navigate('/cities/add');
+    navigate(`/countries/${params.countryId}/cities/add`);
   };
 
   const getCity = async (city) => {
-    navigate(`/cities/${city.cityId}`);
+    navigate(`/countries/${params.countryId}/cities/${city.cityId}`);
   };
 
   const updateCity = async (city) => {
-    navigate(`/cities/update/${city.cityId}`);
+    navigate(`/countries/${params.countryId}/cities/update/${city.cityId}`);
   };
 
   const deleteCity = async (city) => {
     try {
-        const res=await axios.delete(`http://localhost:3001/cities/${city.cityId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
+        const res=await axios.delete(`http://localhost:3001/countries/${params.countryId}/cities/${city.cityId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
         console.log(res)
         
         setCities(cities.filter((oldCity) => oldCity.cityId !== city.cityId));
@@ -129,12 +130,12 @@ export default function Cities() {
               </tbody>
               {cities.length > 0 &&
                 cities.map((city) => (
-                  <tbody key={city.cityId}>
+                  <tbody key={city._id}>
                     <Row>
                       <Data onClick={() => getCity(city)}>{city.cityId}</Data>
                       <Data onClick={() => getCity(city)}>{city.cityName}</Data>
                       <Data onClick={() => getCity(city)}>{city.image}</Data>
-                      <Data onClick={() => getCity(city)}>{city.grounds.map((ground) => <div key={ground._id}>{ground.groundName}</div>)}</Data>
+                      <Data onClick={() => getCity(city)}>{city.grounds.length > 0 && city.grounds.map((ground) => <div key={ground._id}>{ground.groundName}</div>)}</Data>
                       <Data onClick={() => getCity(city)}>{city.status}</Data>
                       <Data><MUITooltip icon="add" color="success" title="Add user." onClick={() => addCity(city)}/></Data>
                       <Data><MUITooltip icon="edit" color="primary" title="Edit user." onClick={() => updateCity(city)}/></Data>

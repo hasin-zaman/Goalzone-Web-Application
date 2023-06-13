@@ -17,8 +17,6 @@ const initialValues = {
   address: '',
   establishedInYear: '',
   additionalInfo: '',
-  phone: '',
-  email: '',
   phoneStatus: '',
   emailStatus: '',
   profileImage: '',
@@ -38,9 +36,7 @@ const validationSchema = Yup.object({
   address: Yup.string().required('Address is required.').max(30, 'Address should not exceed 30 characters'),
   establishedInYear: Yup.number().required("Established in year is required.").min(1947, "Year cannot be less than 1947").max(new Date().getFullYear(), 'Invalid year'),
   additionalInfo: Yup.string(),
-  phone: Yup.string().required('Phone Number is required.').min(11, 'Minimum 11 characters are required.'),
-  email: Yup.string().required('Email is required.').email('Invalid email format.'),
-  status: Yup.string().required('Status is required.'),
+  status: Yup.string(),
   profileImage: Yup.string(),
   coverImage: Yup.string(),
   mapLink: Yup.string(),
@@ -48,8 +44,8 @@ const validationSchema = Yup.object({
   webUrl: Yup.string(),
   facebookHandle: Yup.string(),
   instaHandle: Yup.string(),
-  phoneStatus: Yup.string().required('Phone status needs to be chosen.'),
-  emailStatus: Yup.string().required('Email status needs to be chosen.'),
+  phoneStatus: Yup.string(),
+  emailStatus: Yup.string(),
 });
 
 export default function GroundAdd() {
@@ -62,13 +58,13 @@ export default function GroundAdd() {
   const addGround = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.post(`http://localhost:3001/cities/${params.cityId}/grounds`, values, {
+      const res = await axios.post(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds`, values, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);
       setMessage(res.data.message);
       setColor('green');
-      window.location.href=`cities`;
+      window.location.href=`/countries/${params.countryId}/cities/${params.cityId}/grounds`;
     } catch (error) {
         setMessage(error.response.data.message);
         setColor('red');
@@ -106,11 +102,9 @@ export default function GroundAdd() {
                 <CustomTextField name="address" label="Address" />
                 <CustomTextField name="establishedInYear" label="Established In Year" />
                 <CustomTextField name="additionalInfo" label="Additional Information" />
-                <CustomTextField name="phone" label="Phone" />
                 <h3 style={{color: 'whitesmoke'}}>Phone Status</h3>
                 <RadioField name="phoneStatus" label="Public" value="Public" />
                 <RadioField name="phoneStatus" label="Private" value="Private" />
-                <CustomTextField name="email" label="Email" />
                 <h3 style={{color: 'whitesmoke'}}>Email Status</h3>
                 <RadioField name="emailStatus" label="Public" value="Public" />
                 <RadioField name="emailStatus" label="Private" value="Private" />

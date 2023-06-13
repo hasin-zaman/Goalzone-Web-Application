@@ -15,7 +15,7 @@ align-items center;
 const List=styled.ul`
 list-style: none;
 padding: 0;
-margin: 0 0 140px 0;
+margin: 0 0 120px 0;
 `;
 
 const Title=styled.li`
@@ -63,8 +63,8 @@ export default function Drawer() {
             <NavLink to='/users' style={linkStyle}><Title>Users</Title></NavLink>
             <NavLink to='/teams' style={linkStyle}><Title>Teams</Title></NavLink>
             <NavLink to='/countries' style={linkStyle}><Title>Countries</Title></NavLink>
-            <NavLink to='/cities' style={linkStyle}><Title>Cities</Title></NavLink>
-            <NavLink to={`/cities/${params.id}/grounds`} style={linkStyle}><Title>Grounds</Title></NavLink>
+            <NavLink to={`/countries/${params.countryId}/cities`} style={linkStyle}><Title>Cities</Title></NavLink>
+            <NavLink to={`/countries/${params.countryId}/cities/${params.cityId}/grounds`} style={linkStyle}><Title>Grounds</Title></NavLink>
         </List>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'sticky', top: '570px'}}>
             <Button color='success' onClick={logout} style={logoutLinkStyle}><FaSignOutAlt /> Logout</Button>

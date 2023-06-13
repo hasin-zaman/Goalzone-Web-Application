@@ -132,7 +132,7 @@ export default function User() {
 
   const getUser=async () =>{
     try {
-      const res=await axios.get(`http://localhost:3001/users/${params.id}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
+      const res=await axios.get(`http://localhost:3001/users/${params.userId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       console.log(res);
       setUser(res.data);
     } catch (error) {

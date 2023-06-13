@@ -1,14 +1,13 @@
 const Country = require('../models/countryModel');
-const City = require('../models/cityModel');
 
 const getAllCities = async (req, res, next) => {
     try { // checking if countryId correct
         const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
-        if (! country) {
+        if (!country) {
             return res.status(404).json({message: "Country not found."}) // Not Found
         }
 
-        const cities = country.cities;
+        const cities = country.cities.filter((city=>city.status==="Active"));
         res.status(200).json(cities);
     } catch (error) {
         res.status(500).json({message: 'Unable to get cities.'});

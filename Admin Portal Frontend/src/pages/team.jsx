@@ -139,7 +139,7 @@ export default function Team() {
 
   const sendRequest=async ()=>{
     try {
-      const res=await axios.put(`http://localhost:3001/teams/${params.id}/send/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
+      const res=await axios.put(`http://localhost:3001/teams/${params.teamId}/send/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       console.log("Send: ", res.data)
       setButton("Request Sent")
     } catch (error) {
@@ -149,7 +149,7 @@ export default function Team() {
 
   const unsendRequest=async ()=>{
     try {
-      const res=await axios.put(`http://localhost:3001/teams/${params.id}/unsend/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
+      const res=await axios.put(`http://localhost:3001/teams/${params.teamId}/unsend/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       console.log("Unsend: ", res.data)
       setButton("Join Team")
     } catch (error) {
@@ -159,7 +159,7 @@ export default function Team() {
 
   const leaveTeam=async ()=>{
     try {
-      const res=await axios.put(`http://localhost:3001/teams/${params.id}/leaveTeam/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
+      const res=await axios.put(`http://localhost:3001/teams/${params.teamId}/leaveTeam/${sessionStorage.getItem("userId")}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       console.log("Leave Team: ", res.data)
       setButton("Join Team")
     } catch (error) {
@@ -169,7 +169,7 @@ export default function Team() {
 
   const getTeam=async () =>{
     try {
-      const res=await axios.get(`http://localhost:3001/teams/${params.id}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
+      const res=await axios.get(`http://localhost:3001/teams/${params.teamId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
       console.log(res.data);
       setTeam(res.data);
 

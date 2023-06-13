@@ -1,36 +1,37 @@
 const User = require('../models/userModel');
+const Country = require('../models/countryModel');
 const City = require('../models/cityModel');
 const Ground = require('../models/groundModel');
 
 const addGround = async (req, res) => {
     try { 
-        if(req.body.inchargeId==null){
-            return res.status(404).json({message: "Incharge's id is not present in the body."})
+        //checking if country exists
+        const country=await Country.findOne({countryId: req.params.countryId});
+        if(!country){
+            return res.status(404).json({message: "Country not found."})//Not Found
         }
 
-        // checking if cityId correct
-        const city = await City.findOne({cityId: req.params.cityId});
-        if (! city) {
-            return res.status(404).json({message: "City not found."}) // Not Found
+        //checking if city exists
+        const city=await City.findOne({cityId: req.params.cityId});
+        if(!city){
+            return res.status(404).json({message: "City not found."})//Not Found
         }
 
-        // checking if user exists
-        const user = await User.findOne({userId: req.body.inchargeId});
-        if (! user) {
-            return res.status(404).json({message: "Captain not found."}) // Not Found
+        //checking if user exists
+        const user=await User.findOne({userId: req.body.inchargeId});
+        if(!user){
+            return res.status(404).json({message: "Incharge not found. Enter incharge's id in body."})//Not Found
         }
 
-        // confirming incharge's role
-        if (user.role == "Player" || user.role == "Captain") {
-            return res.status(403).json({message: "Invalid role."}) // Forbidden
+        //confirming user's role
+        if(user.role=="Player" || user.role=="Captain"){
+            return res.status(403).json({message: "Invalid role."})//Forbidden
         }
 
-        const grounds = await Ground.find({}).countDocuments();
-        const id = req.body.groundName[0].toLowerCase() + req.body.groundName[1].toLowerCase() + "-" + (
-            grounds + 1
-        );
+        const grounds=await Ground.find({}).countDocuments();
+        const id=req.body.groundName[0].toLowerCase()+req.body.groundName[1].toLowerCase()+"-"+(grounds+1);
 
-        const ground = await Ground.create({
+        const ground=await Ground.create({
             groundId: id,
             groundName: req.body.groundName,
             establishedInYear: req.body.establishedInYear,
@@ -44,10 +45,10 @@ const addGround = async (req, res) => {
             coverImage: req.body.coverImage,
             facebookHandle: req.body.facebookHandle,
             instaHandle: req.body.instaHandle,
-            phone: req.body.phone,
+            phone: user.phone,
             phoneStatus: req.body.phoneStatus || "Public",
-            email: req.body.email,
             emailStatus: req.body.emailStatus || "Public",
+            email: user.email,
             incharge: user._id,
             status: req.body.status || "Active"
         });
@@ -62,19 +63,21 @@ const addGround = async (req, res) => {
 }
 
 const getAllGrounds = async (req, res) => {
-    try { // checking if city exists
-        const city = await City.findOne({cityId: req.params.cityId}).populate({
-            path: 'grounds',
-            populate: {
-                path: 'incharge'
-            }
-        });
-        if (! city) {
-            return res.status(404).json({message: "City not found."}) // Not Found
+    try {
+        //checking if country exists
+        const country=await Country.findOne({countryId: req.params.countryId});
+        if(!country){
+            return res.status(404).json({message: "Country not found."})//Not Found
+        }
+
+        //checking if city exists
+        const city=await City.findOne({cityId: req.params.cityId}).populate({path: 'grounds', populate: {path: 'incharge'}});
+        if(!city){
+            return res.status(404).json({message: "City not found."})//Not Found
         }
 
         const grounds = city.grounds;
-
+    
         res.status(200).json(grounds);
     } catch (error) {
         res.status(500).json({message: 'Unable to get grounds.'});
@@ -83,42 +86,45 @@ const getAllGrounds = async (req, res) => {
 
 const getGround = async (req, res) => {
     try {
-        const city = await City.findOne({cityId: req.params.cityId}).populate({
-            path: 'grounds',
-            populate: {
-                path: 'incharge'
-            }
-        });
-        if (! city) {
-            return res.status(404).json({message: 'City not found.'});
-        }
+      //checking if country exists
+      const country=await Country.findOne({countryId: req.params.countryId});
+      if(!country){
+          return res.status(404).json({message: "Country not found."})//Not Found
+      }
 
-        const ground = city.grounds.find((ground) => ground.groundId === req.params.id);
-
-        if (! ground) {
-            return res.status(404).json({message: 'Ground not found.'});
-        }
-
-        res.status(200).json(ground);
+      const city = await City.findOne({ cityId: req.params.cityId }).populate({path: 'grounds', populate: {path: 'incharge'}});
+      if(!city) {
+        return res.status(404).json({message: 'City not found.'});
+      }
+  
+      const ground = city.grounds.find(
+        (ground) => ground.groundId === req.params.id
+      );
+  
+      if(!ground) {
+        return res.status(404).json({message: 'Ground not found.'});
+      }
+  
+      res.status(200).json(ground);
     } catch (error) {
-        res.status(500).json({message: error.message});
+      res.status(500).json({message: error.message});
     }
 }
 
 const updateGround = async (req, res) => {
     try {
-        const city = await City.findOne({cityId: req.params.cityId}).populate({
-            path: 'grounds',
-            populate: {
-                path: 'incharge'
-            }
-        });
-        if (! city || city.grounds.length == 0) {
+        const country=await Country.findOne({countryId: req.params.countryId});
+        if(!country){
+              return res.status(404).json({message: "Country not found."})//Not Found
+        }
+
+        const city=await City.findOne({cityId: req.params.cityId}).populate('grounds');
+        if (!city || city.grounds.length == 0) {
             return res.status(404).json({message: 'City not found or no grounds in the city.'});
         }
 
-        let ground = await Ground.findOne({groundId: req.params.id});
-        if (! ground) {
+        let ground = city.grounds.find((ground) => ground.groundId === req.params.id);
+        if (!ground) {
             return res.status(404).json({message: 'Ground not found.'});
         }
 
@@ -159,18 +165,17 @@ const updateGround = async (req, res) => {
 
 const deleteGround = async (req, res) => {
     try {
-        const city = await City.findOne({cityId: req.params.cityId});
-        if (! city) {
+        const country=await Country.findOne({countryId: req.params.countryId});
+        if(!country){
+              return res.status(404).json({message: "Country not found."})
+        }
+
+        const city = await City.findOne({cityId: req.params.cityId}).populate('grounds');
+        if (!city) {
             return res.status(404).json({message: 'City not found'});
         }
 
-        const ground = await Ground.findOne({groundId: req.params.id});
-        if (!ground) {
-            return res.status(404).json({message: 'Ground not found'});
-        }
-
-        const groundIndex = city.grounds.findIndex((arrayGround) => arrayGround._id === ground._id);
-        console.log(groundIndex);
+        const groundIndex = city.grounds.indexOf(city.grounds.find(ground => ground.groundId === req.params.id));
         if (groundIndex === -1) {
             return res.status(404).json({message: 'Ground not found in the city'});
         }
@@ -178,9 +183,9 @@ const deleteGround = async (req, res) => {
         city.grounds.splice(groundIndex, 1);
         await city.save();
 
-        await Ground.findOneAndDelete({groundId: req.params.id});
+        const ground=await Ground.findOneAndDelete({groundId: req.params.id});
 
-        res.status(200).json({message: 'Ground deleted successfully'});
+        res.status(200).json({message: 'Ground deleted successfully', ground});
     } catch (error) {
         res.status(500).json({message: error.message});
     }

@@ -12,32 +12,32 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 
 const validationSchema = Yup.object({
-  cityId: Yup.string().lowercase("Id should be in lowercase alphabets."),
-  cityName: Yup.string(),
+  countryId: Yup.string().lowercase("Id should be in lowercase alphabets."),
+  countryName: Yup.string(),
   image: Yup.string(),
   status: Yup.string(),
 });
 
-export default function CityUpdate() {
+export default function CountryUpdate() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [color, setColor] = useState('');
 
   const params = useParams();
-  const [cityData, setCityData] = useState(null);
+  const [countryData, setCountryData] = useState(null);
 
-  const updateCity = async (values) => {
+  const updateCountry = async (values) => {
     setIsLoading(true);
     try {
       const res = await axios.put(
-        `http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}`,
+        `http://localhost:3001/countries/${params.countryId}`,
         values,
         { headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` } }
       );
       console.log(res);
       setMessage(res.data.message);
       setColor('green');
-      window.location.href=`/countries/${params.countryId}/cities`;
+      window.location.href='/countries';
     } catch (error) {
       setMessage(error.response.data.message);
       setColor('red');
@@ -46,20 +46,20 @@ export default function CityUpdate() {
     }
   };
 
-  const getCity = async () => {
+  const getCountry = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}`, {
+      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);
-      setCityData(res.data);
+      setCountryData(res.data);
     } catch (error) {
       console.log(error.res.data.message);
     }
   };
 
   useEffect(() => {
-    getCity();
+    getCountry();
   }, []);
 
   return (
@@ -83,11 +83,11 @@ export default function CityUpdate() {
             }}
           >
             <h2 style={{color: 'whitesmoke'}}>Form</h2>
-            {cityData && (
-              <Formik initialValues={cityData} validationSchema={validationSchema} onSubmit={updateCity}>
+            {countryData && (
+              <Formik initialValues={countryData} validationSchema={validationSchema} onSubmit={updateCountry}>
                 <Form>
-                  <CustomTextField name="cityId" label="City id" placeholder="Enter city's initials." />
-                  <CustomTextField name="cityName" label="City name" placeholder="Enter city's name." />
+                  <CustomTextField name="countryId" label="Country id" placeholder="Enter country's initials." />
+                  <CustomTextField name="countryName" label="Country name" placeholder="Enter country's name." />
                   <CustomTextField name="image" label="Image" placeholder="Enter image's url." />
                   <RadioField name="status" label="Active" value="Active" />
                   <RadioField name="status" label="Inactive" value="Inactive" />

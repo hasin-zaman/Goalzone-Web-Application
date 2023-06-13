@@ -42,13 +42,13 @@ export default function GroundUpdate() {
   const updateGround = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.put(`http://localhost:3001/cities/${params.cityId}/grounds/${params.id}`, values, {
+      const res = await axios.put(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}`, values, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);
       setMessage(res.data.message);
       setColor('green');
-      window.location.href='/cities';
+      window.location.href=`/countries/${params.countryId}/cities/${params.cityId}/grounds`;
     } catch (error) {
         setMessage(error.response.data.message);
         setColor('red');
@@ -59,7 +59,7 @@ export default function GroundUpdate() {
 
   const getGround = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/cities/${params.cityId}/grounds/${params.id}`, {
+      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

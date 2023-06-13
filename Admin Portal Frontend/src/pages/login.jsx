@@ -36,7 +36,7 @@ export default function Login(){
             
                         setMessage(response.data.message);
                         
-                        window.location.reload();
+                        window.location.href='/';
                     } catch (error) {
                         setMessage(error.response.data.message);
                     } finally {

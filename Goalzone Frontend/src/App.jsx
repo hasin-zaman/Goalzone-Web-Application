@@ -23,16 +23,16 @@ function App() {
       <BrowserRouter>
       <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/users/:id" element={<User />} />
+          <Route path="/users/:userId" element={<User />} />
           <Route path="/teams" element={<Teams />} />
-          <Route path="/teams/:id" element={<Team />} />
-          <Route path="/teams/:id/requests" element={<TeamRequests />} />
+          <Route path="/teams/:teamId" element={<Team />} />
+          <Route path="/teams/:teamId/requests" element={<TeamRequests />} />
           <Route path="/countries" element={<Countries />} />
-          <Route path="/cities" element={<Cities />} />
-          <Route path="register/cities" element={<RegisterGroundCities />} />
-          <Route path="/cities/:cityId/grounds" element={<Grounds />} />
-          <Route path="/cities/:cityId/grounds/:id" element={<Ground />} />
-          <Route path="register/cities/:cityId/grounds" element={<RegisterGround />} />
+          <Route path="/countries/:countryId/cities" element={<Cities />} />
+          <Route path="/register/countries/:countryId/cities" element={<RegisterGroundCities />} />
+          <Route path="/countries/:countryId/cities/:cityId/grounds" element={<Grounds />} />
+          <Route path="/countries/:countryId/cities/:cityId/grounds/:groundId" element={<Ground />} />
+          <Route path="/register/countries/:countryId/cities/:cityId/grounds" element={<RegisterGround />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/faqs" element={<Faqs />} />

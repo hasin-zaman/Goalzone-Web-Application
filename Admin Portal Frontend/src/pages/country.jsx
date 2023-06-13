@@ -5,31 +5,31 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-export default function City() {
+export default function Country() {
   const params = useParams();
-  const [cityData, setCityData] = useState(null);
+  const [countryData, setCountryData] = useState(null);
 
-  const getCity = async () => {
+  const getCountry = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}`, {
+      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);
-      setCityData(res.data);
+      setCountryData(res.data);
     } catch (error) {
       console.log(error.res.data.message);
     }
   };
 
   useEffect(() => {
-    getCity();
+    getCountry();
   }, []);
 
   return (
     <div style={{ display: 'flex' }}>
       <Drawer />
       <div style={{ width: '85%' }}>
-        <Header title="City" />
+        <Header title="Country" />
         <div>
           <Paper
             elevation={5}
@@ -46,18 +46,18 @@ export default function City() {
             }}
           >
             <h1 style={{ color: 'white' }}>
-              {cityData && (
+              {countryData && (
                 <>
-                  {cityData.cityName} ({cityData.cityId})
+                  {countryData.countryName} ({countryData.countryId})
                 </>
               )}
             </h1>
             <img
-              src={cityData && cityData.image}
-              alt={cityData && cityData.cityName}
+              src={countryData && countryData.image}
+              alt={countryData && countryData.countryName}
               style={{ width: '250px', height: '250px', marginTop: '20px' }}
             />
-            <h2 style={{ color: 'grey' }}>{cityData && cityData.status}</h2>
+            <h2 style={{ color: 'grey' }}>{countryData && countryData.status}</h2>
           </Paper>
         </div>
       </div>

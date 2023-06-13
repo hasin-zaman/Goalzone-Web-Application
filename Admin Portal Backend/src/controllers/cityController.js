@@ -1,9 +1,7 @@
 const Country=require('../models/countryModel');
 const City=require('../models/cityModel');
-const {validateCityId}=require('../helpers/authenticationHelpers');
-const {cityAuthSchema}=require('../helpers/cityAuthSchema');
 
-const addCity = async (req, res, next) => {
+const addCity = async (req, res) => {
     try {
         // checking if countryId correct
         const country = await Country.findOne({countryId: req.params.countryId});
@@ -27,9 +25,9 @@ const addCity = async (req, res, next) => {
     }
 }
 
-const getAllCities = async (req, res, next) => {
+const getAllCities = async (req, res) => {
     try { // checking if countryId correct
-        const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
+        const country = await Country.findOne({countryId: req.params.countryId}).populate({path: 'cities', populate: {path: 'grounds'}});
         if (! country) {
             return res.status(404).json({message: "Country not found."}) // Not Found
         }
@@ -41,7 +39,7 @@ const getAllCities = async (req, res, next) => {
     }
 }
 
-const getCity = async (req, res, next) => {
+const getCity = async (req, res) => {
     try {
         const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
         if (!country) {
@@ -60,7 +58,7 @@ const getCity = async (req, res, next) => {
     }
 }
 
-const updateCity = async (req, res, next) => {
+const updateCity = async (req, res) => {
     try {
         //disallowing updating cityId which are supposed to stay unique
         if(req.body.hasOwnProperty('cityId') && req.body.cityId!=req.params.id){
@@ -80,7 +78,7 @@ const updateCity = async (req, res, next) => {
     }
 }
 
-const deleteCity = async (req, res, next) => {
+const deleteCity = async (req, res) => {
     try {
         const city = await City.findOneAndDelete({cityId: req.params.id});
         

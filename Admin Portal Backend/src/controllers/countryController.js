@@ -21,17 +21,17 @@ const addCountry = async (req, res, next) => {
     }
 }
 
-const getAllCountries = async (req, res, next) => {
+const getAllCountries = async (req, res) => {
     try {
-        //finding all active countries
-        const countries = await Country.find({});
+        //finding all countries
+        const countries = await Country.find({}).populate('cities');
         res.status(200).json(countries);
     } catch (error) {
         res.status(500).json({ message: 'Unable to get countries.'});
     }
 }
 
-const getCountry = async (req, res, next) => {
+const getCountry = async (req, res) => {
     try {
         //finding and checking if country exists
         const country=await Country.findOne({countryId: req.params.id});

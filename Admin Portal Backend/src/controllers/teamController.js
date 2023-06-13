@@ -62,7 +62,7 @@ const addTeam = async (req, res) => {
 const getAllTeams = async (req, res) => {
     try {
         //finding all teams
-        const teams = await Team.find({}).populate("captain", "firstName lastName");
+        const teams = await Team.find({}).populate("captain", "userId firstName lastName");
         res.status(200).json(teams);
     } catch (error) {
         res.status(500).json({ message: 'Unable to get teams.'});

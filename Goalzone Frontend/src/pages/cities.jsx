@@ -4,6 +4,7 @@ import Footer from '../components/footer';
 import ActionAreaCard from '../components/actionCard';
 import styled from 'styled-components';
 import { HashLoader } from 'react-spinners';
+import { useParams } from 'react-router-dom';
 
 const Main=styled.div`
 display: flex;
@@ -20,6 +21,8 @@ export default function Cities(){
     const [cities, setCities] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const params=useParams();
+
     const override={
         display: "block",
         margin: "0 auto",
@@ -28,7 +31,7 @@ export default function Cities(){
 
       const getCities = async () => {
           try{
-              const res = await fetch("http://localhost:3000/cities", {credentials: 'include'}, {method: 'GET'});
+              const res = await fetch(`http://localhost:3000/countries/${params.countryId}/cities`, {credentials: 'include'}, {method: 'GET'});
               const resJson = await res.json();
               setCities(resJson);
               console.log(resJson[0])

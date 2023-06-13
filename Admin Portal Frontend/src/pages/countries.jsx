@@ -134,8 +134,7 @@ export default function Countries() {
                       <Data onClick={() => getCountry(country)}>{country.countryId}</Data>
                       <Data onClick={() => getCountry(country)}>{country.countryName}</Data>
                       <Data onClick={() => getCountry(country)}>{country.image}</Data>
-                      <Data onClick={() => getCountry(country)}></Data>
-                      {/* <Data onClick={() => getCountry(country)}>{country.cities.map((city) => <div key={city._id}>{city.cityName}</div>)}</Data> */}
+                      <Data onClick={() => getCountry(country)}>{country.cities.length > 0 && country.cities.map((city) => <div key={city._id}>{city.cityName}</div>)}</Data>
                       <Data onClick={() => getCountry(country)}>{country.status}</Data>
                       <Data><MUITooltip icon="add" color="success" title="Add country." onClick={() => addCountry(country)}/></Data>
                       <Data><MUITooltip icon="edit" color="primary" title="Edit country." onClick={() => updateCountry(country)}/></Data>

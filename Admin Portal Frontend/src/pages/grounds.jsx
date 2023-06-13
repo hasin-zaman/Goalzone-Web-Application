@@ -56,7 +56,7 @@ export default function Grounds() {
 
   const getAllGrounds = async () => {
     try {
-        const res=await axios.get(`http://localhost:3001/cities/${params.cityId}/grounds`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
+        const res=await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
         setGrounds(res.data);
         console.log(res.data);
     } catch (error) {
@@ -65,20 +65,20 @@ export default function Grounds() {
 }
 
 const getGround = (ground) => {
-    navigate(`/cities/${params.cityId}/grounds/${ground.groundId}`)
+    navigate(`/countries/${params.countryId}/cities/${params.cityId}/grounds/${ground.groundId}`)
 }
 
 const addGround = () => {
-  navigate(`/cities/${params.cityId}/grounds/add`)
+  navigate(`/countries/${params.countryId}/cities/${params.cityId}/grounds/add`)
 }
 
 const updateGround = (ground) => {
-  navigate(`/cities/${params.cityId}/grounds/update/${ground.groundId}`)
+  navigate(`/countries/${params.countryId}/cities/${params.cityId}/grounds/update/${ground.groundId}`)
 }
 
 const deleteGround = async (ground) =>{
     try {
-        const res=await axios.delete(`http://localhost:3001/cities/${params.cityId}/grounds/${ground.groundId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
+        const res=await axios.delete(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${ground.groundId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
         console.log(res)
 
         setGrounds(grounds.filter(oldGround=>oldGround.groundId!==ground.groundId))
@@ -132,7 +132,7 @@ useEffect(() => {
                         <Data onClick={()=>getGround(ground)}>{ground.establishedInYear}</Data>
                         <Data onClick={()=>getGround(ground)}>{ground.type}</Data>
                         <Data onClick={()=>getGround(ground)}>{ground.address}</Data>
-                        <Data onClick={()=>getGround(ground)}></Data>
+                        <Data onClick={()=>getGround(ground)}>{ground.incharge.firstName + " " + ground.incharge.lastName}</Data>
                         <Data onClick={()=>getGround(ground)}>{ground.status}</Data>
                         <Data><MUITooltip icon="add" color="success" title="Add ground." onClick={() => addGround()}/></Data>
                         <Data><MUITooltip icon="edit" color="primary" title="Edit ground." onClick={()=>updateGround(ground)}/></Data>
