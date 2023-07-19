@@ -33,7 +33,6 @@ This web application is an idea to automate football grounds' booking in order t
 - [ ] Testing webapp.
 
 ### Schema
-![Screenshot (6)](https://user-images.githubusercontent.com/121337662/231320790-66759036-11dc-44b7-86da-bf64c60c7813.png)
 
 ### Backend:
 
