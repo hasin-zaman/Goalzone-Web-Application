@@ -57,7 +57,7 @@ const registerGround = async (req, res) => {
     }
 }
 
-const getAllGrounds = async (req, res, next) => {
+const getAllGrounds = async (req, res) => {
     try {
         //checking if country exists
         const country=await Country.findOne({countryId: req.params.countryId});
@@ -66,14 +66,21 @@ const getAllGrounds = async (req, res, next) => {
         }
 
         //checking if city exists
-        const city=await City.findOne({cityId: req.params.cityId}).populate('grounds');
+        const city=await City.findOne({cityId: req.params.cityId}).populate({path: 'grounds', populate: {path: 'incharge'}});
         if(!city){
             return res.status(404).json({message: "City not found."})//Not Found
         }
 
-        const grounds = city.grounds.filter((ground)=>ground.status==="Active");
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const grounds = city.grounds.filter((ground)=>ground.status==='Active').slice(skip, skip + limit);
+
+        const totalGrounds=await Ground.countDocuments({status: 'Active'});
     
-        res.status(200).json(grounds);
+        res.status(200).json({page, totalGrounds, totalPages: Math.ceil(totalGrounds/limit), grounds});
     } catch (error) {
         res.status(500).json({message: 'Unable to get grounds.'});
     }

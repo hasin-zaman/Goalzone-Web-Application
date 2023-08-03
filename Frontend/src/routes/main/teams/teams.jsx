@@ -6,6 +6,7 @@ import NavBar from '../../../components/main/navbar';
 import Footer from '../../../components/main/footer';
 import ActionAreaCard from '../../../components/main/actionCard';
 import teamLogo from '../../../assets/teamLogo.jpg'
+import { Link } from 'react-router-dom';
 
 const Main=styled.div`
 display: flex;
@@ -31,8 +32,8 @@ export default function Teams(){
     const getTeams = async () => {
         try {
             const res=await axios.get("http://localhost:3000/teams", {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
-            setTeams(res.data);
-            console.log(res.data);
+            setTeams(res.data.teams);
+            console.log(res.data.teams);
         } catch (error) {
             console.log(error.data)
         }
@@ -51,16 +52,20 @@ export default function Teams(){
 
     return(
         <div style={{backdropFilter: "blur(40px)", backgroundColor: "rgba(0, 0, 0, 0.6)"}}>
+            <div style={{minHeight: '100vh'}}>
             <NavBar />
-            {loading ? <div style={{height: "600px", display: "flex", alignItems: "center"}}><HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/></div> : 
+            {loading ? <div style={{height: "80vh", display: "flex", alignItems: "center"}}><HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/></div> : 
             <Main>
             {teams.length > 0 && (
                     teams.map(team => (
-                    <ActionAreaCard key={team.teamId} link={`/teams/${team.teamId}`} title={team.teamName} image={team.profileImage ? team.profileImage : teamLogo} />
+                    <Link key={team.teamId} to={`/teams/${team.teamId}`} style={{textDecoration: 'none'}}>
+                        <ActionAreaCard title={team.teamName} image={team.profileImage ? team.profileImage : teamLogo} />
+                    </Link>
                     ))
             )}
             </Main>
             }
+            </div>
             <Footer />
         </div>
     )

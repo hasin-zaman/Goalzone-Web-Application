@@ -68,28 +68,40 @@ const postReview = async (req, res) => {
 }
 
 const getAllReviews = async (req, res) => {
-    try {
-        //checking if country exists
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."})//Not Found
+    try { // checking if country exists
+        const country = await Country.findOne({countryId: req.params.countryId});
+        if (!country) {
+            return res.status(404).json({message: "Country not found."}) // Not Found
         }
 
-        //checking if city exists
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-            return res.status(404).json({message: "City not found."})//Not Found
+        // checking if city exists
+        const city = await City.findOne({cityId: req.params.cityId});
+        if (!city) {
+            return res.status(404).json({message: "City not found."}) // Not Found
         }
 
-        //checking if ground exists
-        const ground=await Ground.findOne({groundId: req.params.groundId}).populate('reviews');;
-        if(!ground){
-            return res.status(404).json({message: "Ground not found."})//Not Found
+        // checking if ground exists
+        const ground = await Ground.findOne({groundId: req.params.groundId}).populate({
+            path: 'reviews',
+            populate: {
+                path: 'user',
+                select: 'userId firstName lastName role profileImage'
+            }
+        });
+        if (!ground) {
+            return res.status(404).json({message: "Ground not found."}) // Not Found
         }
 
-        const reviews = ground.reviews.filter(review=>review.status==="Approved");
-    
-        res.status(200).json(reviews);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const reviews = ground.reviews.filter(review=>(review.status==='Approved' || review.status==='Pending-approval')).slice(skip, skip + limit);
+
+        const totalReviews=await Review.countDocuments({status: 'Approved'});
+
+        res.status(200).json({page, totalReviews, totalPages: Math.ceil(totalReviews/limit), reviews});
     } catch (error) {
         res.status(500).json({message: 'Unable to get reviews.'});
     }
@@ -156,12 +168,17 @@ const updateReview = async (req, res) => {
             return res.status(400).json({message: 'Review id, user, and status are not allowed to be changed.'});
         }
 
+        if((req.body.hasOwnProperty('rating') && req.body.rating==review.rating) && (req.body.hasOwnProperty('review') && req.body.review==review.review)){
+            return res.status(400).json({message: 'Identical review. Please edit your review in order to send update request.'});
+        }
+
         review.rating=req.body.rating || review.rating;
         review.review=req.body.review || review.review;
+        review.status='Pending-approval';
 
         const updatedReview=await review.save();
 
-        res.status(200).json({message: "Review successfully updated!", updatedReview});
+        res.status(200).json({message: "Review updation request successfully sent!", updatedReview});
     } catch (error) {
         res.status(500).json({message: error.message});
     }

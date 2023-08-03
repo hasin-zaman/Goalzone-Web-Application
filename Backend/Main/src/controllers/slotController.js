@@ -120,9 +120,14 @@ const getAllSlots = async (req, res, next) => {
             return res.status(404).json({message: "Ground not found."})//Not Found
         }
 
-        const slots = ground.slots;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const slots = ground.slots.slice(skip, skip + limit);
     
-        res.status(200).json(slots);
+        res.status(200).json({page, totalSlots: ground.slots.length, totalPages: Math.ceil(ground.slots.length/limit), slots});
     } catch (error) {
         res.status(500).json({message: 'Unable to get slots.'});
     }

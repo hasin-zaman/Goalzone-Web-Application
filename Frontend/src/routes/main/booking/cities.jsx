@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { HashLoader } from 'react-spinners';
 import NavBar from '../../../components/main/navbar';
@@ -33,8 +33,8 @@ export default function Cities(){
           try{
               const res = await fetch(`http://localhost:3000/countries/${params.countryId}/cities`, {credentials: 'include'}, {method: 'GET'});
               const resJson = await res.json();
-              setCities(resJson);
-              console.log(resJson[0])
+              setCities(resJson.cities);
+              console.log(resJson.cities)
           } 
           catch(error){
               console.log(error);
@@ -54,16 +54,23 @@ export default function Cities(){
 
     return(
         <div style={{backdropFilter: "blur(40px)", backgroundColor: "rgba(0, 0, 0, 0.6)"}}>
+            <div style={{minHeight: '100vh'}}>
             <NavBar />
-            {loading ? <div style={{height: "600px", display: "flex", alignItems: "center"}}><HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/></div> : 
+            {loading ? 
+            <div style={{height: '80vh', display: "flex", alignItems: "center"}}>
+                <HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/>
+            </div> : 
             <Main>
             {cities.length > 0 && (
                     cities.map(city => (
-                    <ActionAreaCard key={city.cityId} link={`cities/${city.cityId}/grounds`} title={city.cityName} image={city.image} />
+                    <Link key={city.cityId} to={`/countries/${params.countryId}/cities/${city.cityId}/grounds`} style={{textDecoration: 'none'}}>
+                        <ActionAreaCard title={city.cityName} image={city.image} />
+                    </Link>
                     ))
             )}
             </Main>
             }
+            </div>
             <Footer />
         </div>
     )

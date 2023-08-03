@@ -9,7 +9,7 @@ router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews', get
 
 router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:id', getReview);
 
-router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:id', updateReview);
+router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:id', verifyAccessToken(), updateReview);
 
 router.delete('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:id', deleteReview);
 

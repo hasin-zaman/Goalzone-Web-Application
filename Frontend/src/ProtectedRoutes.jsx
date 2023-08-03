@@ -1,9 +1,19 @@
 import { Outlet, Navigate } from 'react-router-dom'
+import Forbidden from './routes/protected/forbidden'
 
 const ProtectedRoutes = () => {
-    return(
-        Boolean(sessionStorage.getItem('accessToken')) && sessionStorage.getItem('role')=="Admin" ? <Outlet/> : <Navigate to="/login"/>
-    )
+    
+    if(sessionStorage.getItem('accessToken')) {
+
+        if(sessionStorage.getItem('role')!='Admin'){
+            return <Forbidden />
+        }
+
+        return <Outlet />
+    }
+    else {
+        return <Navigate to='/login' />
+    }
 }
 
 export default ProtectedRoutes

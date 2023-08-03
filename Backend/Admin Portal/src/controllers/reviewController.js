@@ -28,9 +28,14 @@ const getAllReviews = async (req, res) => {
             return res.status(404).json({message: "Ground not found."}) // Not Found
         }
 
-        const reviews = ground.reviews;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
 
-        res.status(200).json(reviews);
+        const skip = (page - 1) * limit;
+
+        const reviews = ground.reviews.slice(skip, skip + limit);
+
+        res.status(200).json({page, totalReviews: ground.reviews.length, totalPages: Math.ceil(ground.reviews.length/limit), reviews});
     } catch (error) {
         res.status(500).json({message: 'Unable to get reviews.'});
     }

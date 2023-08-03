@@ -2,8 +2,17 @@ const Contact=require('../models/contactModel');
 
 const getAllMessages = async (req, res) => {
     try {
-        const messages = await Contact.find().sort({createdAt: -1});
-        res.status(200).json(messages);
+        const page=parseInt(req.query.page) || 1;
+        const limit=parseInt(req.query.limit) || 10;
+
+        const skip=(page-1) * limit;
+
+        const messages = await Contact.find().sort({createdAt: -1}).skip(skip).limit(limit);
+
+        const totalMessages = await Contact.countDocuments();
+        const totalPages = Math.ceil(totalMessages/limit);
+
+        res.status(200).json({page, totalMessages, totalPages, messages});
     } catch (error) {
         res.status(500).json({message: 'Unable to get contact messages.'});
     }

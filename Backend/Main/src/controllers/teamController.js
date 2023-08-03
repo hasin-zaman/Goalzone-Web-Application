@@ -57,9 +57,17 @@ const addTeam = async (req, res) => {
 
 const getAllTeams = async (req, res) => {
     try {
-        //finding all active teams
-        const teams = await Team.find({status: "Active"});
-        res.status(200).json(teams);
+        const page=parseInt(req.query.page) || 1;
+        const limit=parseInt(req.query.limit) || 10;
+
+        const skip=(page-1) * limit;
+
+        const teams = await Team.find({status: 'Active'}).sort({createdAt: -1}).skip(skip).limit(limit).populate('captain', 'userId firstName lastName');
+
+        const totalTeams = await Team.countDocuments({status: 'Active'});
+        const totalPages = Math.ceil(totalTeams/limit);
+
+        res.status(200).json({page, totalTeams, totalPages, teams});
     } catch (error) {
         res.status(500).json({ message: 'Unable to get teams.'});
     }

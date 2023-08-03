@@ -1,9 +1,13 @@
 body {
   margin: 0;
+  padding: 0;
+  width: 100%;
   /* background-image: url("./assets/background2.jpg");
   background-size: contain; */
   /* background-color: rgba(0, 0, 0, 0.9); */
   /* filter: blur(3px); */
+  
+  background: linear-gradient(#051f29, #062e3b, #074155, #03565c, #04747c, #079aa5);
 }
 
 :root {
@@ -13,10 +17,9 @@ body {
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-image: url("./assets/background2.jpg");
-  background-size: contain;
-  /* background-color: #121212; */
-  background: linear-gradient(#051f29, #062e3b, #074155, #03565c, #04747c, #079aa5);
+  /* background-image: url("./assets/background2.jpg");
+  background-size: contain; */
+  background-color: #121212;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

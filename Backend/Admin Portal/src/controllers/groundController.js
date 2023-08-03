@@ -76,9 +76,14 @@ const getAllGrounds = async (req, res) => {
             return res.status(404).json({message: "City not found."})//Not Found
         }
 
-        const grounds = city.grounds;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const grounds = city.grounds.slice(skip, skip + limit);
     
-        res.status(200).json(grounds);
+        res.status(200).json({page, totalGrounds: city.grounds.length, totalPages: Math.ceil(city.grounds.length/limit), grounds});
     } catch (error) {
         res.status(500).json({message: 'Unable to get grounds.'});
     }

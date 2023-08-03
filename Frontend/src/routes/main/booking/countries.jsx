@@ -4,6 +4,7 @@ import { HashLoader } from 'react-spinners';
 import NavBar from '../../../components/main/navbar';
 import Footer from '../../../components/main/footer';
 import ActionAreaCard from '../../../components/main/actionCard';
+import { Link } from 'react-router-dom';
 
 const Main=styled.div`
 display: flex;
@@ -30,8 +31,8 @@ export default function Countries(){
           try{
               const res = await fetch("http://localhost:3000/countries", {credentials: 'include'}, {method: 'GET'});
               const resJson = await res.json();
-              setCountries(resJson);
-              console.log(resJson[0])
+              setCountries(resJson.countries);
+              console.log(resJson.countries)
           } 
           catch(error){
               console.log(error);
@@ -51,16 +52,23 @@ export default function Countries(){
 
     return(
         <div style={{backdropFilter: "blur(40px)", backgroundColor: "rgba(0, 0, 0, 0.6)"}}>
+            <div style={{minHeight: '100vh'}}>
             <NavBar />
-            {loading ? <div style={{height: "600px", display: "flex", alignItems: "center"}}><HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/></div> : 
+            {loading ? 
+            <div style={{height: "80vh", display: "flex", alignItems: "center"}}>
+                <HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/>
+            </div> : 
             <Main>
             {countries.length > 0 && (
                     countries.map(country => (
-                    <ActionAreaCard key={country.countryId} link={`countries/${country.countryId}/cities`} title={country.countryName} image={country.image} />
+                    <Link key={country.countryId} to={`/countries/${country.countryId}/cities`} style={{textDecoration: 'none'}}>
+                        <ActionAreaCard title={country.countryName} image={country.image} />
+                    </Link>
                     ))
             )}
             </Main>
             }
+            </div>
             <Footer />
         </div>
     )

@@ -1,6 +1,12 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Loader from './components/global/loader';
 import ProtectedRoutes from './ProtectedRoutes';
+import ErrorBoundary from './ErrorBoundary';
+import NotFound from './routes/protected/notFound';
+import ServiceUnavailable from './routes/protected/serviceUnavailable';
 //main routes
 import Login from './routes/main/login';
 import Signup from './routes/main/signup';
@@ -47,10 +53,41 @@ import AdminReviews from './routes/admin/reviews/reviews';
 import AdminReview from './routes/admin/reviews/review';
 
 function App() {
+  const [health, setHealth]=useState(null);
+  const [serviceUnavailable, setServiceUnavailable]=useState(false);
+  const [isLoading, setIsLoading]=useState(true);
+
+  const healthCheck=async () =>{
+    try {
+      await Promise.all([
+        axios.get('http://localhost:3000/health').then((res) => setHealth(res.data)),
+        new Promise(resolve => setTimeout(resolve, 1500))
+      ])
+
+      setIsLoading(false);
+    } catch (error) {
+      setServiceUnavailable(true);
+      console.log(error);
+      setIsLoading(false);
+    }
+  }
+  
+  useEffect(() => {
+    healthCheck()
+  }, [])
+
+  if(isLoading) {
+    return <Loader />
+  }
 
   return (
       <BrowserRouter>
-      <Routes>
+      <ErrorBoundary>
+        {serviceUnavailable 
+        ? 
+        <ServiceUnavailable /> 
+        : 
+        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/users/:userId" element={<User />} />
           <Route path="/teams" element={<Teams />} />
@@ -96,7 +133,10 @@ function App() {
             <Route path="/admin/countries/:countryId/cities/:cityId/grounds/:groundId/reviews" element={<AdminReviews />} />
             <Route path="/admin/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:reviewId" element={<AdminReview />} />
           </Route>
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        }
+      </ErrorBoundary>
     </BrowserRouter>
   )
 }

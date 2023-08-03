@@ -1,10 +1,18 @@
 const Country=require('../models/countryModel');
 
-const getAllCountries = async (req, res, next) => {
+const getAllCountries = async (req, res) => {
     try {
-        //finding all active countries
-        const countries = await Country.find({status: "Active"});
-        res.status(200).json(countries);
+        const page=parseInt(req.query.page) || 1;
+        const limit=parseInt(req.query.limit) || 10;
+
+        const skip=(page-1) * limit;
+
+        const countries = await Country.find({status: 'Active'}).sort({createdAt: -1}).skip(skip).limit(limit).populate('cities');
+
+        const totalCountries = await Country.countDocuments({status: 'Active'});
+        const totalPages = Math.ceil(totalCountries/limit);
+
+        res.status(200).json({page, totalCountries, totalPages, countries});
     } catch (error) {
         res.status(500).json({ message: 'Unable to get countries.'});
     }

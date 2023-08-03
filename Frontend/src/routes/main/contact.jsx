@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Paper, Typography, TextField, Button } from '@mui/material';
+import { Paper, Typography, Button } from '@mui/material';
 import Footer from '../../components/main/footer';
 import NavBar from '../../components/main/navbar';
 import contact from '../../assets/contact.jpg';
 import axios from 'axios';
+import MUITextField from '../../components/global/MUITextField';
+import MUIButton from '../../components/global/muiButton';
 
 const Main = styled.div`
   display: flex;
@@ -38,42 +40,11 @@ const RightHalf = styled.form`
   flex-direction: column;
   padding: 40px;
   gap: 20px;
-`;
-
-const FormField = styled(TextField)`
-  width: 100%;
-
-  & .MuiInputLabel-root {
-    color: black;
-  }
-
-  & .MuiOutlinedInput-root {
-    & fieldset {
-      border-color: black;
-    }
-
-    &:hover fieldset {
-      border-color: black;
-    }
-
-    &.Mui-focused fieldset {
-      border-color: green;
-    }
-  }
-
-  & .MuiInputLabel-root.Mui-focused {
-    color: green;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
+  background-color: eef2e6;
 `;
 
 export default function ContactUs() {
 
-  const [user, setUser]=useState();
   const [isLoading, setIsLoading]=useState(false);
   const [message, setMessage]=useState('');
   const [color, setColor]=useState('');
@@ -148,12 +119,12 @@ export default function ContactUs() {
             </div>
           </LeftHalf>
           <RightHalf onSubmit={handleSubmit}>
-            <FormField label="Name" variant="outlined" disabled={sessionStorage.getItem('userId') ? true : false} name='name' value={formData.name} onChange={handleChange} />
-            <FormField label="Email" variant="outlined" disabled={sessionStorage.getItem('userId') ? true : false} name='email'value={formData.email} onChange={handleChange} />
-            <FormField label="Message" multiline rows={8} variant="outlined" name='message' value={formData.message} onChange={handleChange} />
-            <ButtonContainer>
-              <Button size='medium' type='submit' variant="contained" color="success" style={{minWidth: '130px'}} disabled={isLoading}>{isLoading ? "Sending..." : "Send"}</Button>
-            </ButtonContainer>
+            <MUITextField label="Name" variant="outlined" disabled={sessionStorage.getItem('userId') ? true : false} name='name' value={formData.name} onChange={handleChange} />
+            <MUITextField label="Email" variant="outlined" disabled={sessionStorage.getItem('userId') ? true : false} name='email'value={formData.email} onChange={handleChange} />
+            <MUITextField label="Message" multiline rows={8} variant="outlined" name='message' value={formData.message} onChange={handleChange} />
+            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+              <MUIButton icon='send' type='submit' disabled={isLoading} title={isLoading ? "Sending..." : "Send"} />
+            </div>
             <Typography color={color} style={{fontSize: '17px', fontWeight: '500', position: 'relative', bottom: '20px'}}>{message}</Typography>
           </RightHalf>
         </ContactForm>
