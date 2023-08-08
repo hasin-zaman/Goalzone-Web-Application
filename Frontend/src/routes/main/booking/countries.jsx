@@ -16,10 +16,18 @@ align-items: center;
 gap: 60px;
 `;
 
+const Message = styled.div `
+  font-size: 50px;
+  font-wight: 700;
+  color: whitesmoke;
+  margin: 60px;
+`;
+
 export default function Countries(){
 
     const [countries, setCountries] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const override={
         display: "block",
@@ -29,25 +37,22 @@ export default function Countries(){
 
       const getCountries = async () => {
           try{
-              const res = await fetch("http://localhost:3000/countries", {credentials: 'include'}, {method: 'GET'});
-              const resJson = await res.json();
-              setCountries(resJson.countries);
-              console.log(resJson.countries)
+            await Promise.all([
+                fetch("http://localhost:3000/countries", {credentials: 'include'}, {method: 'GET'}).then(async (res) => {const resJson = await res.json(); setCountries(resJson.countries)}),
+                new Promise(resolve => setTimeout(resolve, 1000))
+            ]);  
+
+            setLoading(false);
           } 
           catch(error){
-              console.log(error);
+            console.log(error);
+            setErrorMessage(error);
+            setLoading(false);
           }
         }
 
-    const loader=()=>{
-        setLoading(true);
-        setTimeout(()=>{
-            setLoading(false)
-        },800)
-    }
     useEffect(() => {
-        getCountries(),
-        loader()
+        getCountries()
       }, [])
 
     return(
@@ -59,13 +64,14 @@ export default function Countries(){
                 <HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/>
             </div> : 
             <Main>
-            {countries.length > 0 && (
+            {countries.length > 0 ? (
                     countries.map(country => (
                     <Link key={country.countryId} to={`/countries/${country.countryId}/cities`} style={{textDecoration: 'none'}}>
                         <ActionAreaCard title={country.countryName} image={country.image} />
                     </Link>
-                    ))
-            )}
+                    ))) :
+                    <Message>{errorMessage.message}</Message>
+            }
             </Main>
             }
             </div>

@@ -40,6 +40,7 @@ export default function Message() {
       });
 
       console.log(res);
+      setMessageData(res.data.updatedMessage);
     } catch (error) {
       console.log(error);
     }
@@ -52,7 +53,7 @@ export default function Message() {
       });
 
       console.log(res);
-      window.location.reload();
+      setMessageData(res.data.updatedMessage);
     } catch (error) {
       console.log(error);
     }

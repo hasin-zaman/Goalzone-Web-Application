@@ -1,16 +1,32 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import Loader from './components/global/loader';
-import ProtectedRoutes from './ProtectedRoutes';
 import ErrorBoundary from './ErrorBoundary';
 import NotFound from './routes/protected/notFound';
 import ServiceUnavailable from './routes/protected/serviceUnavailable';
-//main routes
-import Login from './routes/main/login';
-import Signup from './routes/main/signup';
+
+const lazyWithFallback = (importFunction) => {
+  const LazyComponent = lazy(() => {
+    return Promise.all([importFunction(), new Promise((resolve) => setTimeout(resolve, 800))])
+      .then(([moduleExports]) => moduleExports)
+  });
+
+  return (props) => (
+    <Suspense fallback={<Loader />}>
+      <LazyComponent {...props} />
+    </Suspense>
+  );
+};
+
+
+const ProtectedRoutes = lazyWithFallback(() => import('./ProtectedRoutes'));
+
+// main routes
 import Home from './routes/main/home';
+const Login = lazyWithFallback(() => import('./routes/main/login'));
+const Signup = lazyWithFallback(() => import('./routes/main/signup'));
 import AboutUs from './routes/main/about';
 import ContactUs from './routes/main/contact';
 import Faqs from './routes/main/faqs';
@@ -20,37 +36,38 @@ import Team from './routes/main/teams/team';
 import TeamRequests from './routes/main/teams/teamRequests';
 import Countries from './routes/main/booking/countries';
 import Cities from './routes/main/booking/cities';
-import RegisterGroundCities from './routes/main/booking/registerGroundCities';
+const RegisterGroundCities = lazyWithFallback(() => import('./routes/main/booking/registerGroundCities'));
 import Grounds from './routes/main/booking/grounds';
 import Ground from './routes/main/booking/ground';
-import RegisterGround from './routes/main/booking/registerGround';
-//admin routes
-import AdminHome from './routes/admin/home';
-import AdminUsers from './routes/admin/users/users';
-import AdminUser from './routes/admin/users/user';
-import AdminUserAdd from './routes/admin/users/userAdd';
-import AdminUserUpdate from './routes/admin/users/userUpdate';
-import AdminTeams from './routes/admin/teams/teams';
-import AdminTeam from './routes/admin/teams/team';
-import AdminTeamAdd from './routes/admin/teams/teamAdd';
-import AdminTeamUpdate from './routes/admin/teams/teamUpdate';
-import AdminTeamRequests from './routes/admin/teams/teamRequests';
-import AdminCountries from './routes/admin/countries/countries';
-import AdminCountry from './routes/admin/countries/country';
-import AdminCountryAdd from './routes/admin/countries/countryAdd';
-import AdminCountryUpdate from './routes/admin/countries/countryUpdate';
-import AdminCities from './routes/admin/cities/cities';
-import AdminCity from './routes/admin/cities/city';
-import AdminCityAdd from './routes/admin/cities/cityAdd';
-import AdminCityUpdate from './routes/admin/cities/cityUpdate';
-import AdminGrounds from './routes/admin/grounds/grounds';
-import AdminGround from './routes/admin/grounds/ground';
-import AdminGroundAdd from './routes/admin/grounds/groundAdd';
-import AdminGroundUpdate from './routes/admin/grounds/groundUpdate';
-import AdminMessages from './routes/admin/contact/messages';
-import AdminMessage from './routes/admin/contact/message';
-import AdminReviews from './routes/admin/reviews/reviews';
-import AdminReview from './routes/admin/reviews/review';
+const RegisterGround = lazyWithFallback(() => import('./routes/main/booking/registerGround'));
+
+// admin routes
+const AdminHome = lazyWithFallback(() => import('./routes/admin/home'));
+const AdminUsers = lazyWithFallback(() => import('./routes/admin/users/users'));
+const AdminUser = lazyWithFallback(() => import('./routes/admin/users/user'));
+const AdminUserAdd = lazyWithFallback(() => import('./routes/admin/users/userAdd'));
+const AdminUserUpdate = lazyWithFallback(() => import('./routes/admin/users/userUpdate'));
+const AdminTeams = lazyWithFallback(() => import('./routes/admin/teams/teams'));
+const AdminTeam = lazyWithFallback(() => import('./routes/admin/teams/team'));
+const AdminTeamAdd = lazyWithFallback(() => import('./routes/admin/teams/teamAdd'));
+const AdminTeamUpdate = lazyWithFallback(() => import('./routes/admin/teams/teamUpdate'));
+const AdminTeamRequests = lazyWithFallback(() => import('./routes/admin/teams/teamRequests'));
+const AdminCountries = lazyWithFallback(() => import('./routes/admin/countries/countries'));
+const AdminCountry = lazyWithFallback(() => import('./routes/admin/countries/country'));
+const AdminCountryAdd = lazyWithFallback(() => import('./routes/admin/countries/countryAdd'));
+const AdminCountryUpdate = lazyWithFallback(() => import('./routes/admin/countries/countryUpdate'));
+const AdminCities = lazyWithFallback(() => import('./routes/admin/cities/cities'));
+const AdminCity = lazyWithFallback(() => import('./routes/admin/cities/city'));
+const AdminCityAdd = lazyWithFallback(() => import('./routes/admin/cities/cityAdd'));
+const AdminCityUpdate = lazyWithFallback(() => import('./routes/admin/cities/cityUpdate'));
+const AdminGrounds = lazyWithFallback(() => import('./routes/admin/grounds/grounds'));
+const AdminGround = lazyWithFallback(() => import('./routes/admin/grounds/ground'));
+const AdminGroundAdd = lazyWithFallback(() => import('./routes/admin/grounds/groundAdd'));
+const AdminGroundUpdate = lazyWithFallback(() => import('./routes/admin/grounds/groundUpdate'));
+const AdminMessages = lazyWithFallback(() => import('./routes/admin/contact/messages'));
+const AdminMessage = lazyWithFallback(() => import('./routes/admin/contact/message'));
+const AdminReviews = lazyWithFallback(() => import('./routes/admin/reviews/reviews'));
+const AdminReview = lazyWithFallback(() => import('./routes/admin/reviews/review'));
 
 function App() {
   const [health, setHealth]=useState(null);
@@ -61,7 +78,7 @@ function App() {
     try {
       await Promise.all([
         axios.get('http://localhost:3000/health').then((res) => setHealth(res.data)),
-        new Promise(resolve => setTimeout(resolve, 1500))
+        new Promise(resolve => setTimeout(resolve, 1300))
       ])
 
       setIsLoading(false);
@@ -82,6 +99,7 @@ function App() {
 
   return (
       <BrowserRouter>
+      <Suspense fallback={<Loader />}>
       <ErrorBoundary>
         {serviceUnavailable 
         ? 
@@ -137,6 +155,7 @@ function App() {
         </Routes>
         }
       </ErrorBoundary>
+      </Suspense>
     </BrowserRouter>
   )
 }

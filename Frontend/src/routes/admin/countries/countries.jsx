@@ -9,20 +9,18 @@ import Drawer from '../../../components/admin/drawer';
 import Header from '../../../components/admin/Header';
 
 const Page = styled.div`
-  width: 100%;
+  width: 85%;
   padding: 50px 0;
   display: flex;
-  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const StyledTable = styled.table`
-  width: 85%;
+  width: 100%;
   background-color: rgba(132, 136, 132, 0.2);
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
   border-collapse: collapse;
-  position: relative;
-  bottom: 70px;
 `;
 
 const FirstRow = styled.tr`
@@ -60,7 +58,7 @@ export default function Countries() {
   const getAllCountries = async () => {
     try {
       const res = await axios.get('http://localhost:3001/countries', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
-      setCountries(res.data);
+      setCountries(res.data.countries);
       console.log(res.data);
     } catch (error) {
       console.log(error.data);
@@ -109,7 +107,7 @@ export default function Countries() {
       <Drawer />
       <div style={{ width: '85%', minHeight: '100vh' }}>
         <Header title="Countries" toolTip="Add country." onClick={() => addCountry()} />
-        <div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <Page>
             <StyledTable>
               <tbody>

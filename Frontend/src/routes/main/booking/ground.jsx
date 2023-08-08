@@ -312,7 +312,7 @@ export default function Ground() {
       await Promise.all([
         getAllReviews(),
         getGround(),
-        new Promise(resolve => setTimeout(resolve, 2000))
+        new Promise(resolve => setTimeout(resolve, 2500))
       ]);
 
       setIsFetching(false);
@@ -329,18 +329,18 @@ export default function Ground() {
   if (isFetching) {
     return (
       <Page>
-        <Skeleton animation='wave' variant='rectangular' width='100%' height='220px' sx={{ backgroundColor: '#B2BEB5' }} />
+        <Skeleton variant='rectangular' width='100%' height='220px' sx={{ backgroundColor: '#B2BEB5' }} />
         <Content>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Skeleton animation='wave' variant='circular' width='200px' height='200px' sx={{ backgroundColor: '#B2BEB5', position: 'absolute', top: '140px' }} />
+            <Skeleton variant='circular' width='200px' height='200px' sx={{ backgroundColor: '#B2BEB5', position: 'absolute', top: '140px' }} />
           </div>
-          <Skeleton animation='wave' variant='text' width='20%' height='30px' sx={{ backgroundColor: '#B2BEB5', margin: '140px auto 55px auto' }} />
-          <Skeleton animation='wave' variant='rectangular' width='80%' height='400px' sx={{ backgroundColor: '#B2BEB5', margin: '0 auto' }} />
-          <Skeleton animation='wave' variant='rectangular' width='70%' height='200px' sx={{ backgroundColor: '#B2BEB5', margin: '40px auto' }} />
-          <Skeleton animation='wave' variant='text' width='30%' height='20px' sx={{ backgroundColor: '#B2BEB5', margin: '0 auto' }} />
-          <Skeleton animation='wave' variant='rectangular' width='90%' height='400px' sx={{ backgroundColor: '#B2BEB5', margin: '60px auto 30px auto' }} />
-          <Skeleton animation='wave' variant='text' width='30%' height='20px' sx={{ backgroundColor: '#B2BEB5', margin: '0 auto' }} />
-          <Skeleton animation='wave' variant='rectangular' width='90%' height='200px' sx={{ backgroundColor: '#B2BEB5', margin: '80px auto' }} />
+          <Skeleton variant='text' width='20%' height='30px' sx={{ backgroundColor: '#B2BEB5', margin: '140px auto 55px auto' }} />
+          <Skeleton variant='rectangular' width='80%' height='400px' sx={{ backgroundColor: '#B2BEB5', margin: '0 auto' }} />
+          <Skeleton variant='rectangular' width='70%' height='200px' sx={{ backgroundColor: '#B2BEB5', margin: '40px auto' }} />
+          <Skeleton variant='text' width='30%' height='20px' sx={{ backgroundColor: '#B2BEB5', margin: '0 auto' }} />
+          <Skeleton variant='rectangular' width='90%' height='400px' sx={{ backgroundColor: '#B2BEB5', margin: '60px auto 30px auto' }} />
+          <Skeleton variant='text' width='30%' height='20px' sx={{ backgroundColor: '#B2BEB5', margin: '0 auto' }} />
+          <Skeleton variant='rectangular' width='90%' height='200px' sx={{ backgroundColor: '#B2BEB5', margin: '80px auto' }} />
         </Content>
       </Page>
     );

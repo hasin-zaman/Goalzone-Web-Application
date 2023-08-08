@@ -4,25 +4,24 @@ import styled from 'styled-components';
 import axios from 'axios';
 import formatDate from '../../../utils/formatDate';
 import formatMessage from '../../../utils/formatMessage';
-import Drawer from '../../../components/admin/drawer';
-import Header from '../../../components/admin/Header';
+import MUIPagination from '../../../components/global/muiPagination';
 import MUITooltip from '../../../components/global/muiTooltip';
 import AlertDialog from '../../../components/global/alertDialog';
+import Drawer from '../../../components/admin/drawer';
+import Header from '../../../components/admin/Header';
 
 const Page = styled.div`
-  width: 100%;
+  width: 85%;
   padding: 50px 0;
   display: flex;
-  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const StyledTable = styled.table`
-  width: 85%;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
+  width: 100%;
   border-collapse: collapse;
-  position: relative;
-  bottom: 7px;
 `;
 
 const FirstRow = styled.tr`
@@ -56,14 +55,17 @@ export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
+  const [pages, setPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const navigate=useNavigate();
   const params=useParams();
 
   const getAllReviews = async () => {
     try {
-        const res=await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
-        setReviews(res.data);
+        const res=await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }});
+        setReviews(res.data.reviews);
+        setPages(res.data.totalPages);
         console.log(res.data);
     } catch (error) {
         console.log(error.data);
@@ -86,10 +88,6 @@ export default function Reviews() {
     }
   };
 
-  useEffect(() => {
-    getAllReviews();
-  }, []);
-
   const handleOpenDeleteDialog = (review) => {
     setSelectedReview(review);
     setDeleteDialogOpen(true);
@@ -99,12 +97,26 @@ export default function Reviews() {
     setDeleteDialogOpen(false);
   };
 
+  const changePage=async (e, page) => {
+    if(page!=currentPage){
+        setCurrentPage(page);
+    }
+  }
+
+  useEffect(() => {
+    getAllReviews();
+  }, []);
+
+  useEffect(() => {
+    getAllReviews();
+  }, [currentPage]);
+
   return (
     <div style={{ display: 'flex', backgroundColor: "rgba(0, 0, 0, 0.6)" }}>
       <Drawer />
       <div style={{ width: '85%', minHeight: '100vh' }}>
         <Header title="Reviews" />
-        <div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <Page>
             <StyledTable>
               <tbody>
@@ -133,6 +145,7 @@ export default function Reviews() {
                   </tbody>
                 ))}
             </StyledTable>
+            <MUIPagination count={pages} changePage={changePage} />
           </Page>
         </div>
       </div>

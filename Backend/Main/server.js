@@ -9,8 +9,10 @@ const TeamRoutes=require('./src/routes/teamRoutes');
 const CountryRoutes=require('./src/routes/countryRoutes');
 const CityRoutes=require('./src/routes/cityRoutes');
 const GroundRoutes=require('./src/routes/groundRoutes');
-const SlotRoutes=require('./src/routes/slotRoutes');
 const ReviewRoutes=require('./src/routes/reviewRoutes');
+const DayRoutes=require('./src/routes/dayRoutes');
+const SlotRoutes=require('./src/routes/slotRoutes');
+
 
 app.use(express.json());
 
@@ -62,9 +64,11 @@ app.use('/', CityRoutes);
 
 app.use('/', GroundRoutes);
 
-app.use('/', SlotRoutes);
-
 app.use('/', ReviewRoutes);
+
+app.use('/', DayRoutes);
+
+app.use('/', SlotRoutes);
 
 // protected route
 // app.get('/user/protected', verifyToken, function (req, res) {

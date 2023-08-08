@@ -16,10 +16,18 @@ align-items: center;
 gap: 60px;
 `;
 
+const Message = styled.div `
+  font-size: 50px;
+  font-wight: 700;
+  color: whitesmoke;
+  margin: 60px;
+`;
+
 export default function RegisterGroundCities(){
 
     const [cities, setCities] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const params=useParams();
 
@@ -38,6 +46,7 @@ export default function RegisterGroundCities(){
           } 
           catch(error){
               console.log(error);
+              setErrorMessage(error);
           }
         }
 
@@ -58,13 +67,14 @@ export default function RegisterGroundCities(){
             <NavBar />
             {loading ? <div style={{height: "80vh", display: "flex", alignItems: "center"}}><HashLoader color="#04e6e6" loading={loading} cssOverride={override} size={120} aria-label="Loading Spinner" data-testid="loader"/></div> : 
             <Main>
-            {cities.length > 0 && (
+            {cities.length > 0 ? (
                     cities.map(city => (
                     <Link key={city.cityId} to={`/register/countries/${params.countryId}/cities/${city.cityId}/grounds`} style={{textDecoration: 'none'}}>
                         <ActionAreaCard title={city.cityName} image={city.image} />
                     </Link>
-                    ))
-            )}
+                    ))) : 
+                    <Message>{errorMessage.message}</Message>
+            }
             </Main>
             }
             </div>

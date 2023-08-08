@@ -89,31 +89,6 @@ const groundSchema = mongoose.Schema(
                 trim: true
             }
         ],
-        // slots: [
-        //     { 
-        //         slotId: {
-        //             type: Number,
-        //             required: true
-        //         },
-        //         startTime: {
-        //             type: String,
-        //             required: true
-        //         },
-        //         endTime: {
-        //             type: String,
-        //             required: true
-        //         },
-        //         bookingFee: {
-        //             type: Number,
-        //             required: true
-        //         },
-        //         slotStatus: {
-        //             type: String,
-        //             enum: ['Open', 'Closed', 'Selected'],
-        //             required: true
-        //         }
-        //     }
-        // ],
         reviews: [
             {
                 type: mongoose.Schema.Types.ObjectId,
@@ -124,10 +99,10 @@ const groundSchema = mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User'
             },
-        slots: [
+        days: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Slot'
+                ref: 'Day'
             }
         ],
         status: {

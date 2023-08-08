@@ -3,26 +3,25 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import formatDate from '../../../utils/formatDate';
+import MUIPagination from '../../../components/global/muiPagination';
 import MUITooltip from '../../../components/global/muiTooltip';
 import AlertDialog from '../../../components/global/alertDialog';
 import Drawer from '../../../components/admin/drawer';
 import Header from '../../../components/admin/Header';
 
 const Page = styled.div`
-  width: 100%;
+  width: 85%;
   padding: 50px 0;
   display: flex;
-  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const StyledTable = styled.table`
-  width: 85%;
+  width: 100%;
   background-color: rgba(132, 136, 132, 0.2);
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
   border-collapse: collapse;
-  position: relative;
-  bottom: 70px;
 `;
 
 const FirstRow = styled.tr`
@@ -54,14 +53,17 @@ export default function Grounds() {
   const [grounds, setGrounds] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedGround, setSelectedGround] = useState(null);
+  const [pages, setPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const navigate = useNavigate();
   const params=useParams();
 
   const getAllGrounds = async () => {
     try {
-        const res=await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
-        setGrounds(res.data);
+        const res=await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }})
+        setGrounds(res.data.grounds);
+        setPages(res.data.totalPages);
         console.log(res.data);
     } catch (error) {
         console.log(error.data)
@@ -92,10 +94,6 @@ export default function Grounds() {
     }
   }
 
-  useEffect(() => {
-    getAllGrounds()
-  }, [])
-
   const handleOpenDeleteDialog = (ground) => {
     setSelectedGround(ground);
     setDeleteDialogOpen(true);
@@ -105,12 +103,26 @@ export default function Grounds() {
     setDeleteDialogOpen(false);
   };
 
+  const changePage=async (e, page) => {
+    if(page!=currentPage){
+        setCurrentPage(page);
+    }
+  }
+
+  useEffect(() => {
+    getAllGrounds()
+  }, [])
+
+  useEffect(() => {
+    getAllGrounds()
+  }, [currentPage])
+
   return (
     <div style={{ display: 'flex', backgroundColor: "rgba(0, 0, 0, 0.6)" }}>
       <Drawer />
       <div style={{ width: '85%', minHeight: '100vh' }}>
         <Header title="Grounds" toolTip="Add ground." onClick={() => addGround()} />
-        <div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <Page>
             <StyledTable>
               <tbody>
@@ -145,6 +157,7 @@ export default function Grounds() {
                   </tbody>
                 ))}
             </StyledTable>
+            <MUIPagination count={pages} changePage={changePage} />
           </Page>
         </div>
       </div>

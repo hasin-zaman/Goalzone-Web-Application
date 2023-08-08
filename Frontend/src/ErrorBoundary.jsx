@@ -18,6 +18,9 @@ class ErrorBoundary extends Component {
         else if(error.response && error.response.status===503) {
             return { hasError: true, errorType: 'serviceUnavailable' }
         }
+        else if(error instanceof TypeError && error.message === 'NetworkError when attempting to fetch resource.') {
+            return { hasError: true, errorType: 'networkError' }
+        }
         else if(error.response && error.response.status===404) {
             return { hasError: true, errorType: 'notFound' }
         }
@@ -36,6 +39,7 @@ class ErrorBoundary extends Component {
             switch(errorType) {
                 case 'internalServerError': return <InternalServerError />;
                 case 'serviceUnavailable': return <ServiceUnavailable />;
+                case 'networkError': return <ServiceUnavailable />;
                 case 'notFound': return <NotFound />;
                 case 'forbidden': return <Forbidden />;
                 default: return <BadRequest />;

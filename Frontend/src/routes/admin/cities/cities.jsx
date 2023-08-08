@@ -9,20 +9,18 @@ import MUITooltip from '../../../components/global/muiTooltip';
 import AlertDialog from '../../../components/global/alertDialog';
 
 const Page = styled.div`
-  width: 100%;
+  width: 85%;
   padding: 50px 0;
   display: flex;
-  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const StyledTable = styled.table`
-  width: 85%;
+  width: 100%;
   background-color: rgba(132, 136, 132, 0.2);
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
   border-collapse: collapse;
-  position: relative;
-  bottom: 70px;
 `;
 
 const FirstRow = styled.tr`
@@ -61,7 +59,7 @@ export default function Cities() {
   const getAllCities = async () => {
     try {
       const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
-      setCities(res.data);
+      setCities(res.data.cities);
       console.log(res.data);
     } catch (error) {
       console.log(error.data);
@@ -110,7 +108,7 @@ export default function Cities() {
       <Drawer />
       <div style={{ width: '85%', minHeight: '100vh' }}>
         <Header title="Cities" toolTip="Add city." onClick={() => addCity()}/>
-        <div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <Page>
             <StyledTable>
               <tbody>

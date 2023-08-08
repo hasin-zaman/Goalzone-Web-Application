@@ -22,12 +22,13 @@ const Message = styled.div `
   font-size: 50px;
   font-wight: 700;
   color: whitesmoke;
-  margin: 130px;
+  margin: 60px;
 `;
 
 export default function Grounds() {
     const [grounds, setGrounds] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
     const params = useParams();
 
     const override = {
@@ -38,26 +39,22 @@ export default function Grounds() {
 
     const getAllGrounds = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/countries/${params.countryId}/cities/${params.cityId}/grounds`, 
-        {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
-        setGrounds(res.data.grounds);
-        console.log(res.data.grounds);
+        await Promise.all([
+          axios.get(`http://localhost:3000/countries/${params.countryId}/cities/${params.cityId}/grounds`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}}).then((res) => setGrounds(res.data.grounds)),
+          new Promise(resolve => setTimeout(resolve, 1000))
+        ]);
+        
+        setLoading(false);
       } 
       catch (error) {
         console.log(error.data);
+        setErrorMessage(error);
+        setLoading(false);
       }
-    };
-
-    const loader = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-        }, 800);
     };
 
     useEffect(() => {
         getAllGrounds();
-        loader();
     }, []);
 
     return (
@@ -74,7 +71,7 @@ export default function Grounds() {
               <Link key={ground.groundId} to={`/countries/${params.countryId}/cities/${params.cityId}/grounds/${ground.groundId}`} style={{textDecoration: 'none'}}>
                 <ActionAreaCard title={ground.groundName} image={ground.profileImage ? ground.profileImage : teamLogo} />
               </Link>))) : 
-              <Message>No grounds registered in this city</Message>} 
+              <Message>{errorMessage!='' ? errorMessage.message : 'No grounds registered in this city'}</Message>} 
           </Main>
           )
         }

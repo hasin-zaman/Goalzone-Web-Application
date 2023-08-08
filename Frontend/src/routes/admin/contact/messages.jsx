@@ -4,25 +4,24 @@ import styled from 'styled-components';
 import axios from 'axios';
 import formatDate from '../../../utils/formatDate';
 import formatMessage from '../../../utils/formatMessage';
+import MUIPagination from '../../../components/global/muiPagination';
 import MUITooltip from '../../../components/global/muiTooltip';
 import AlertDialog from '../../../components/global/alertDialog';
 import Drawer from '../../../components/admin/drawer';
 import Header from '../../../components/admin/Header';
 
 const Page = styled.div`
-  width: 100%;
+  width: 85%;
   padding: 50px 0;
   display: flex;
-  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const StyledTable = styled.table`
-  width: 85%;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
+  width: 100%;
   border-collapse: collapse;
-  position: relative;
-  bottom: 7px;
 `;
 
 const FirstRow = styled.tr`
@@ -56,13 +55,16 @@ export default function Messages() {
   const [messages, setMessages] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [pages, setPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const navigate=useNavigate();
 
   const getAllMessages = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/contact', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
-      setMessages(res.data);
+      const res = await axios.get('http://localhost:3001/contact', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}, params: { page: currentPage, limit: 5}});
+      setMessages(res.data.messages);
+      setPages(res.data.totalPages);
       console.log(res.data);
     } catch (error) {
       console.log(error.data);
@@ -85,9 +87,19 @@ export default function Messages() {
     }
   };
 
+  const changePage=async (e, page) => {
+    if(page!=currentPage){
+        setCurrentPage(page);
+    }
+  }
+
   useEffect(() => {
     getAllMessages();
   }, []);
+
+  useEffect(() => {
+    getAllMessages();
+  }, [currentPage]);
 
   const handleOpenDeleteDialog = (message) => {
     setSelectedMessage(message);
@@ -103,7 +115,7 @@ export default function Messages() {
       <Drawer />
       <div style={{ width: '85%', minHeight: '100vh' }}>
         <Header title="Messages" />
-        <div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <Page>
             <StyledTable>
               <tbody>
@@ -120,7 +132,7 @@ export default function Messages() {
               {messages.length > 0 &&
                 messages.map((message) => (
                   <tbody key={message.messageId}>
-                    <Row>
+                    <Row status={message.status}>
                       <Data onClick={() => getMessage(message)}>{message.messageId}</Data>
                       <Data onClick={() => getMessage(message)}>{message.name}</Data>
                       <Data onClick={() => getMessage(message)}>{message.email}</Data>
@@ -139,6 +151,7 @@ export default function Messages() {
                   </tbody>
                 ))}
             </StyledTable>
+            <MUIPagination count={pages} changePage={changePage} />
           </Page>
         </div>
       </div>

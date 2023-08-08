@@ -1,6 +1,7 @@
 const Country=require('../models/countryModel');
 const City=require('../models/cityModel');
 const Ground=require('../models/groundModel');
+const Day=require('../models/dayModel');
 const User=require('../models/userModel');
 const { validateEmail }=require('../helpers/authenticationHelpers.js');
 const { groundAuthSchema }=require('../helpers/groundAuthSchema');
@@ -50,6 +51,20 @@ const registerGround = async (req, res) => {
 
         city.grounds.push(ground._id);
         city.save();
+
+        const days=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        
+        for(i=1; i<=7; i++){
+            const day=await Day.create({
+                dayId: i,
+                day: days[i-1],
+                date: new Date(),
+                status: "Inactive"
+            });
+            ground.days.push(day._id);
+        }
+
+        ground.save();
     
         res.status(200).json({message: "Ground registration request successfully sent!", ground});
     } catch (error) {
