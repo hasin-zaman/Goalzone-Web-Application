@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const City=require('../models/cityModel');
 const imageValidation = require('../utils/imageValidation');
 
 const countrySchema = mongoose.Schema(
@@ -50,6 +51,16 @@ countrySchema.pre('save', function (next) {
         this.updatedAt = updatedAt;
     }
     next();
+});
+
+countrySchema.pre('findOneAndDelete', async function (next) {
+
+    const country=await Country.findOne({ countryId: this._conditions.countryId }).populate('cities');
+
+    for(let i=0; i<country.cities.length; i++) {
+        await City.findOneAndDelete({ cityId: country.cities[i].cityId });
+    }
+
 });
 
 const Country=mongoose.model('Country', countrySchema, 'Countries');

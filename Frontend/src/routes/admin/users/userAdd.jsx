@@ -56,7 +56,7 @@ export default function UserAdd() {
   const addUser = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.post(`http://localhost:3001/users`, values, {
+      const res = await axios.post(`http://localhost:3000/admin/users`, values, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

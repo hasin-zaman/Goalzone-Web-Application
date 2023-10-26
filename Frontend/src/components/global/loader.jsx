@@ -32,11 +32,9 @@ export default function Loader() {
 
   
   const Circle = styled.div`
-    display: flex;
-    justify-content: center;
-    place-content: center;
-    position: absolute;
-    top: 41%;
+    position: absolte;
+    top: 50%;
+    left: 50%;
   `;
 
   return (

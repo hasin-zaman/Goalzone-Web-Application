@@ -35,7 +35,7 @@ export default function CityAdd(){
     const addCity = async (values) => {
         setIsLoading(true);
         try {
-            const res=await axios.post(`http://localhost:3001/countries/${params.countryId}/cities`, values, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
+            const res=await axios.post(`http://localhost:3000/admin/countries/${params.countryId}/cities`, values, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
             console.log(res)
             setMessage(res.data.message);
             setColor('green');

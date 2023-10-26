@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components'
 import axios from 'axios';
-import { Paper, Typography, Skeleton } from '@mui/material';
+import { Paper, Typography, Skeleton, Tooltip, Zoom, Fab } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
 import ProfileImage from '../../../components/global/profileImage';
@@ -15,6 +15,9 @@ import formatDate from '../../../utils/formatDate';
 import MUITooltip from '../../../components/global/muiTooltip';
 import MUISnackbar from '../../../components/global/muiSnackbar';
 import AlertDialog from '../../../components/global/alertDialog';
+import getDayOfWeek from '../../../utils/getDayOfWeek';
+import { Add } from '@mui/icons-material';
+import MUISelect from '../../../components/global/muiSelect';
 
 const cover="https://source.unsplash.com/1000x200/?football";
 const profile="https://source.unsplash.com/150x150/?logo";
@@ -140,8 +143,9 @@ margin: 0 0 0 7px;
 
 export default function Ground() {
 
-  const [ground, setGround]=useState({})
-  const [reviews, setReviews]=useState([])
+  const [ground, setGround]=useState({});
+  const [slots, setSlots]=useState({});
+  const [reviews, setReviews]=useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const [reviewExists, setReviewExists]=useState(false);
   const [reviewData, setReviewData] = useState({
@@ -159,6 +163,8 @@ export default function Ground() {
   const navigate=useNavigate()
 
   const params=useParams()
+
+  const day=getDayOfWeek(new Date().getDay());
 
   const handleOpenDeleteDialog = (review) => {
     setSelectedReview(review);
@@ -253,6 +259,16 @@ export default function Ground() {
     }
   }
 
+  const getSlotsOfDay=async () =>{
+    try {
+      const res=await axios.get(`http://localhost:3000/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/days/${day}/slots`);
+      console.log(res.data);
+      setSlots(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const getAllReviews=async () =>{
     try {
       const res=await axios.get(`http://localhost:3000/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
@@ -312,6 +328,7 @@ export default function Ground() {
       await Promise.all([
         getAllReviews(),
         getGround(),
+        getSlotsOfDay(),
         new Promise(resolve => setTimeout(resolve, 2500))
       ]);
 
@@ -355,11 +372,26 @@ export default function Ground() {
           </div>
           <Title>{ground.groundName}</Title>
           <SubTitle>{ground.establishedInYear}</SubTitle>
-          <Paper elevation={0} style={{backgroundColor: "rgba(132, 136, 132, 0.3)", width: '80%', height: 400, margin: "30px auto 0 auto", display: "flex", justifyContent: "center", alignItems: "center"}}>
+          <Paper elevation={0} style={{backgroundColor: "rgba(132, 136, 132, 0.3)", width: '80%', display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", paddingBottom: "15px", margin: "40px auto 70px auto"}}>
+            <div style={{borderBottom: "3px solid grey", width: "90%", padding: "20px 8px", display: "flex", alignItems: "center"}}>
+                <Heading>Booking Slots</Heading>
+                <div style={{margin: '0 10px 0 auto', position: 'relative', top: '10px'}}>
+                  <MUISelect />
+                </div>
+                <Tooltip title='Add Slot.' placement='top-start' arrow enterDelay={200} leaveDelay={200} TransitionComponent={Zoom}>
+                  <Fab size="small" color="success" aria-label="add" sx={{display: 'relative', top: '8px'}}>
+                    <Add />
+                  </Fab>
+                </Tooltip>
+            </div>
+          </Paper>
+          <Paper style={{backgroundColor: "rgba(132, 136, 132, 0.3)", width: '100%', minHeight: 500, margin: "30px 0 0 0", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: '0'}}>
             <InfoBox>
             <Heading style={{borderBottom: "3px solid whitesmoke", margin: '0 auto'}}>Details</Heading>
-              <InfoHeading>Ground Type</InfoHeading>
-              <Info>{ground.type}</Info>
+              <InfoHeading>Facility</InfoHeading>
+              <Info>{ground.facility}</Info>
+              <InfoHeading>Format</InfoHeading>
+              <Info>{ground.format}</Info>
               <InfoHeading>Address</InfoHeading>
               <Info>{ground.address}</Info>
               <InfoHeading>Contact</InfoHeading>
@@ -367,11 +399,6 @@ export default function Ground() {
               <InfoHeading>Additional Information</InfoHeading>
               <Info>{ground.additionalInfo ? ground.additionalInfo : "No additional information to show."}</Info>
             </InfoBox>
-          </Paper>
-          <Paper elevation={0} style={{backgroundColor: "rgba(132, 136, 132, 0.3)", width: '70%', display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", paddingBottom: "15px", margin: "40px auto 70px auto"}}>
-            <div style={{borderBottom: "3px solid grey", width: "90%", padding: "8px", display: "flex", alignItems: "center"}}>
-                <Heading style={{margin: '0 auto'}}>Booking</Heading>
-            </div>
           </Paper>
           <ReviewsSection>
             <Heading as='h2' margin='0 0 30px 0'>Reviews</Heading>

@@ -59,7 +59,7 @@ export default function GroundAdd() {
   const addGround = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.post(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds`, values, {
+      const res = await axios.post(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds`, values, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

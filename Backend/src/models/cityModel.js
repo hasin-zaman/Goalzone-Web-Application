@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const Ground=require('../models/groundModel');
 const cityIdValidation=require('../utils/cityIdValidation');
 const imageValidation = require('../utils/imageValidation');
 
@@ -56,6 +57,16 @@ citySchema.pre('save', function (next) {
         this.updatedAt = updatedAt;
     }
     next();
+});
+
+citySchema.pre('findOneAndDelete', async function (next) {
+
+    const city=await City.findOne({ cityId: this._conditions.cityId }).populate('grounds');
+    
+    for(let i=0; i<city.grounds.length; i++) {
+        await Ground.findOneAndDelete({ groundId: city.grounds[i].groundId });
+    }
+
 });
 
 const City=mongoose.model('City', citySchema, 'Cities');

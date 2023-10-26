@@ -59,7 +59,7 @@ export default function Users() {
 
   const getAllUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/users', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}, params: { page: currentPage, limit: 3}});
+      const res = await axios.get('http://localhost:3000/admin/users', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}, params: { page: currentPage, limit: 3}});
       setUsers(res.data.users);
       setPages(res.data.totalPages);
       console.log(res.data);
@@ -82,7 +82,7 @@ export default function Users() {
 
   const deleteUser = async (user) => {
     try {
-        const res=await axios.delete(`http://localhost:3001/users/${user.userId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
+        const res=await axios.delete(`http://localhost:3000/admin/users/${user.userId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
         console.log(res)
         
         setUsers(users.filter((oldUser) => oldUser.userId !== user.userId));

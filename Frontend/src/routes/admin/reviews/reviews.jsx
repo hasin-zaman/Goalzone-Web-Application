@@ -63,7 +63,7 @@ export default function Reviews() {
 
   const getAllReviews = async () => {
     try {
-        const res=await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }});
+        const res=await axios.get(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }});
         setReviews(res.data.reviews);
         setPages(res.data.totalPages);
         console.log(res.data);
@@ -78,7 +78,7 @@ export default function Reviews() {
 
   const deleteReview = async (review) => {
     try {
-        const res=await axios.delete(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/${review.reviewId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
+        const res=await axios.delete(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/${review.reviewId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}});
         console.log(res)
         
         setReviews(reviews.filter((oldReview) => oldReview.reviewId !== review.reviewId));

@@ -1,5 +1,3 @@
-const jwt=require('jsonwebtoken');
-
 function checkRole(role) {
     return function (req, res, next) {
         const user = req.user;

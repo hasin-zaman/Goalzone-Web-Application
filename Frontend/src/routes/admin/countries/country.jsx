@@ -11,7 +11,7 @@ export default function Country() {
 
   const getCountry = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}`, {
+      const res = await axios.get(`http://localhost:3000/admin/countries/${params.countryId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

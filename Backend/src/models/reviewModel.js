@@ -18,7 +18,7 @@ const reviewSchema = mongoose.Schema(
                   return Number.isInteger(value);
                 },
                 message: 'Rating must be an integer number.',
-              }
+            }
         },
         review: {
             type: String,
@@ -31,7 +31,7 @@ const reviewSchema = mongoose.Schema(
                 message: 'Review should not exceed 50 words.',
             }
         },
-        user:{
+        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: [true, 'User is required']

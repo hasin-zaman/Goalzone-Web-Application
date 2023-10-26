@@ -3,6 +3,7 @@ const City=require('../models/cityModel');
 const Ground=require('../models/groundModel');
 const Day=require('../models/dayModel');
 const User=require('../models/userModel');
+const getDayOfWeek=require('../utils/getDayOfWeek');
 
 //main
 const registerGround = async (req, res) => {
@@ -58,18 +59,66 @@ const registerGround = async (req, res) => {
             facebookHandle: req.body.facebookHandle,
             instaHandle: req.body.instaHandle,
             incharge: user._id,
-            status: req.body.status || "Pending-approval"
+            status: req.body.status || "Pending-approval",
+            bookingDays: req.body.bookingDays || 14
         });
 
         city.grounds.push(ground._id);
         city.save();
 
-        const days=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        
-        for(i=0; i<7; i++){
+        const currentDate=new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(currentDate.getHours()+5);
+
+        let day=getDayOfWeek(currentDate.getDay());
+
+        lastId=0;
+        let lastDay=await Day.find().sort({_id:-1}).limit(1);
+        if(lastDay[0]!=null){
+            const jsonString=JSON.stringify(lastDay[0]);
+            const jsonObj=JSON.parse(jsonString);
+            if(jsonObj.dayId.length()==6) {
+                lastId=parseInt(jsonObj.dayId[4]+jsonObj.dayId[5]);
+            }
+            else {
+                lastId=parseInt(jsonObj.dayId[4]);
+            }
+        }
+        let dayId=day[0].toLowerCase()+day[1]+day[2]+"-"+(lastId+1);
+
+        const currentDay = await Day.create({
+            dayId: dayId,
+            day: day,
+            date: currentDate,
+            status: 'Inactive'
+        });
+
+        ground.days.push(currentDay._id);
+
+        for(let i=1; i<=ground.bookingDays; i++) {
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() + i);
+            const newDay=getDayOfWeek(newDate.getDay());
+            
+            let lastId=0;
+            let lastDay=await Day.find().sort({_id:-1}).limit(1);
+            if(lastDay[0]!=null) {
+                const jsonString=JSON.stringify(lastDay[0]);
+                const jsonObj=JSON.parse(jsonString);
+                if(jsonObj.dayId.length()==6) {
+                    lastId=parseInt(jsonObj.dayId[4]+jsonObj.dayId[5]);
+                }
+                else {
+                    lastId=parseInt(jsonObj.dayId[4]);
+                }
+            }
+            const dayId=newDay[0].toLowerCase()+newDay[1]+newDay[2]+"-"+(lastId+1);
+            
             const day=await Day.create({
-                dayId: days[i],
-                status: "Inactive"
+                dayId: dayId,
+                day: newDay,
+                date: newDate,
+                status: 'Inactive'
             });
             ground.days.push(day._id);
         }
@@ -314,7 +363,8 @@ const addGround = async (req, res) => {
             emailStatus: req.body.emailStatus || "Public",
             email: incharge.email,
             incharge: incharge._id,
-            status: req.body.status || "Inactive"
+            status: req.body.status || "Inactive",
+            bookingDays: req.body.bookingDays || 14
         });
 
         city.grounds.push(ground._id);

@@ -24,7 +24,7 @@ export default function Message() {
 
   const getMessage = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/contact/${params.messageId}`, {
+      const res = await axios.get(`http://localhost:3000/admin/contact/${params.messageId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       setMessageData(res.data);
@@ -35,7 +35,7 @@ export default function Message() {
 
   const updateStatusToRead = async () => {
     try {
-      const res = await axios.patch(`http://localhost:3001/contact/status/read/${params.messageId}`, {}, {
+      const res = await axios.patch(`http://localhost:3000/admin/contact/status/read/${params.messageId}`, {}, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
 
@@ -48,7 +48,7 @@ export default function Message() {
 
   const updateStatusToResponded = async () => {
     try {
-      const res = await axios.patch(`http://localhost:3001/contact/status/responded/${params.messageId}`, {}, {
+      const res = await axios.patch(`http://localhost:3000/admin/contact/status/responded/${params.messageId}`, {}, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
 

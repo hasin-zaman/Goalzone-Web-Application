@@ -29,7 +29,7 @@ export default function CityUpdate() {
     setIsLoading(true);
     try {
       const res = await axios.put(
-        `http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}`,
+        `http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}`,
         values,
         { headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` } }
       );
@@ -47,7 +47,7 @@ export default function CityUpdate() {
 
   const getCity = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}`, {
+      const res = await axios.get(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

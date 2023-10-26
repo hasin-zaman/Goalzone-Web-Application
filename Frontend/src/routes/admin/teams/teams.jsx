@@ -59,7 +59,7 @@ export default function Teams() {
 
   const getAllTeams = async () => {
     try {
-        const res=await axios.get("http://localhost:3001/teams", {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }})
+        const res=await axios.get("http://localhost:3000/admin/teams", {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }})
         setTeams(res.data.teams);
         setPages(res.data.totalPages);
         console.log(res.data);

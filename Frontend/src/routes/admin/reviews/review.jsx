@@ -32,7 +32,7 @@ export default function Review() {
 
   const getReview = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/${params.reviewId}`, {
+      const res = await axios.get(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/${params.reviewId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem("accessToken")}` },
       });
       console.log(res);
@@ -44,7 +44,7 @@ export default function Review() {
 
   const approveReview = async () => {
     try {
-      const res = await axios.patch(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/approve/${params.reviewId}`, {}, {
+      const res = await axios.patch(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/approve/${params.reviewId}`, {}, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
 
@@ -57,7 +57,7 @@ export default function Review() {
 
   const disapproveReview = async () => {
     try {
-      const res = await axios.patch(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/disapprove/${params.reviewId}`, {}, {
+      const res = await axios.patch(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}/reviews/disapprove/${params.reviewId}`, {}, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
 

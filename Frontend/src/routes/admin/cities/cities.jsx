@@ -58,7 +58,7 @@ export default function Cities() {
 
   const getAllCities = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
+      const res = await axios.get(`http://localhost:3000/admin/countries/${params.countryId}/cities`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
       setCities(res.data.cities);
       console.log(res.data);
     } catch (error) {
@@ -80,7 +80,7 @@ export default function Cities() {
 
   const deleteCity = async (city) => {
     try {
-        const res=await axios.delete(`http://localhost:3001/countries/${params.countryId}/cities/${city.cityId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
+        const res=await axios.delete(`http://localhost:3000/admin/countries/${params.countryId}/cities/${city.cityId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
         console.log(res)
         
         setCities(cities.filter((oldCity) => oldCity.cityId !== city.cityId));

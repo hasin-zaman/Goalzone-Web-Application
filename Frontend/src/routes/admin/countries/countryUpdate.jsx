@@ -30,7 +30,7 @@ export default function CountryUpdate() {
     setIsLoading(true);
     try {
       const res = await axios.put(
-        `http://localhost:3001/countries/${params.countryId}`,
+        `http://localhost:3000/admin/countries/${params.countryId}`,
         values,
         { headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` } }
       );
@@ -48,7 +48,7 @@ export default function CountryUpdate() {
 
   const getCountry = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}`, {
+      const res = await axios.get(`http://localhost:3000/admin/countries/${params.countryId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

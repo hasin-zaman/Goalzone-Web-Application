@@ -1,6 +1,6 @@
 async function ageValidation(age) {
     
-    if (isNaN(age)) {
+    if(isNaN(age)) {
         return false;
     }
     

@@ -61,7 +61,7 @@ export default function Grounds() {
 
   const getAllGrounds = async () => {
     try {
-        const res=await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }})
+        const res=await axios.get(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}, params: { page: currentPage, limit: 3 }})
         setGrounds(res.data.grounds);
         setPages(res.data.totalPages);
         console.log(res.data);
@@ -84,7 +84,7 @@ export default function Grounds() {
 
   const deleteGround = async (ground) =>{
     try {
-        const res=await axios.delete(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${ground.groundId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
+        const res=await axios.delete(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds/${ground.groundId}`, {headers: {"Authorization": `Bearer ${sessionStorage.getItem("accessToken")}`}})
         console.log(res)
 
         setGrounds(grounds.filter(oldGround=>oldGround.groundId!==ground.groundId))

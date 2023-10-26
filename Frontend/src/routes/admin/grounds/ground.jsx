@@ -100,7 +100,7 @@ export default function Ground() {
 
   const getGround = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}`, { headers: { "Authorization": `Bearer ${sessionStorage.getItem("accessToken")}` } });
+      const res = await axios.get(`http://localhost:3000/admin/countries/${params.countryId}/cities/${params.cityId}/grounds/${params.groundId}`, { headers: { "Authorization": `Bearer ${sessionStorage.getItem("accessToken")}` } });
       console.log(res.data);
       setGround(res.data);
     } catch (error) {

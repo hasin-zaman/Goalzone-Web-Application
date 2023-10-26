@@ -62,7 +62,7 @@ export default function Messages() {
 
   const getAllMessages = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/contact', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}, params: { page: currentPage, limit: 5}});
+      const res = await axios.get('http://localhost:3000/admin/contact', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}, params: { page: currentPage, limit: 5}});
       setMessages(res.data.messages);
       setPages(res.data.totalPages);
       console.log(res.data);
@@ -77,7 +77,7 @@ export default function Messages() {
 
   const deleteMessage = async (message) => {
     try {
-        const res=await axios.delete(`http://localhost:3001/contact/${message.messageId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
+        const res=await axios.delete(`http://localhost:3000/admin/contact/${message.messageId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
         console.log(res)
         
         setMessages(messages.filter((oldMessage) => oldMessage.messageId !== message.messageId));

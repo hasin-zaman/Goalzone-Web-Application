@@ -57,7 +57,7 @@ export default function Countries() {
 
   const getAllCountries = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/countries', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
+      const res = await axios.get('http://localhost:3000/admin/countries', {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}});
       setCountries(res.data.countries);
       console.log(res.data);
     } catch (error) {
@@ -79,7 +79,7 @@ export default function Countries() {
 
   const deleteCountry = async (country) => {
     try {
-        const res=await axios.delete(`http://localhost:3001/countries/${country.countryId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
+        const res=await axios.delete(`http://localhost:3000/admin/countries/${country.countryId}`, {headers: {Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`}})
         console.log(res)
         
         setCountries(countries.filter((oldCountry) => oldCountry.countryId !== country.countryId));

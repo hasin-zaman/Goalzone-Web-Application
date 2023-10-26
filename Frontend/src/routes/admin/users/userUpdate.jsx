@@ -40,7 +40,7 @@ export default function UserUpdate() {
   const updateUser = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.put(`http://localhost:3001/users/${params.userId}`, values, {
+      const res = await axios.put(`http://localhost:3000/admin/users/${params.userId}`, values, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);
@@ -57,7 +57,7 @@ export default function UserUpdate() {
 
   const getUser = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/users/${params.userId}`, {
+      const res = await axios.get(`http://localhost:3000/admin/users/${params.userId}`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

@@ -1,4 +1,6 @@
 const mongoose=require('mongoose');
+const Review=require('../models/reviewModel');
+const Day=require('../models/dayModel');
 const emailValidation = require('../utils/emailValidation');
 const establishedInYearValidation = require('../utils/establishedInYearValidation');
 const facebookHandleValidation = require('../utils/facebookHandleValidation');
@@ -195,6 +197,19 @@ const groundSchema = mongoose.Schema(
                 ref: 'Day'
             }
         ],
+        bookingDays: {
+            type: Number,
+            trim: true,
+            min: [7, 'Minimum booking days can be 7.'],
+            max: [30, 'Maximum booking days can be 30.'],
+            required: [true, 'Booking days is required'],
+            validate: {
+                validator: function (value) {
+                  return Number.isInteger(value);
+                },
+                message: 'booking days must be an integer number.',
+            }
+        },
         status: {
             type: String,
             enum: ['Active', 'Inactive', 'Pending-approval'],
@@ -216,6 +231,19 @@ groundSchema.pre('save', function (next) {
         this.updatedAt = updatedAt;
     }
     next();
+});
+
+groundSchema.pre('findOneAndDelete', async function (next) {
+
+    const ground=await Ground.findOne({ groundId: this._conditions.groundId }).populate('reviews').populate('days');
+
+    for(let i=0; i<ground.reviews.length; i++) {
+        await Review.findOneAndDelete({ reviewId: ground.reviews[i].reviewId });
+    }
+    for(let i=0; i<ground.days.length; i++) {
+        await Day.findOneAndDelete({ dayId: ground.days[i].dayId });
+    }
+
 });
 
 const Ground=mongoose.model('Ground', groundSchema, 'Grounds');

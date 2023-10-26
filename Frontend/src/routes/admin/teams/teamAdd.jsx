@@ -49,7 +49,7 @@ export default function TeamAdd() {
   const addTeam = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.post(`http://localhost:3001/teams`, values, {
+      const res = await axios.post(`http://localhost:3000/admin/teams`, values, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` },
       });
       console.log(res);

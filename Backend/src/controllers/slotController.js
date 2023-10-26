@@ -4,99 +4,117 @@ const Ground=require('../models/groundModel');
 const Day=require('../models/dayModel');
 const Slot=require('../models/slotModel');
 const User=require('../models/userModel');
+const { isValidTimeFormat, isValidTimeGap, isSlotClashing }=require('../utils/slotValidation');
 
+//main
 const createSlot = async (req, res) => {
     try {
         //checking if country exists
         const country=await Country.findOne({countryId: req.params.countryId});
         if(!country){
-            return res.status(404).json({message: "Country not found."})
+            return res.status(404).json({message: "Country not found."});
         }
 
         //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
-            return res.status(404).json({message: "City not found."})
+            return res.status(404).json({message: "City not found."});
         }
 
         //checking if ground exists
         const ground=await Ground.findOne({groundId: req.params.groundId});
         if(!ground){
-            return res.status(404).json({message: "Ground not found."})
+            return res.status(404).json({message: "Ground not found."});
         }
 
         //checking if day exists
-        const day=await Day.findOne({dayId: req.params.dayId});
+        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
         if(!day){
-            return res.status(404).json({message: "Day not found."})
+            return res.status(404).json({message: "Day not found."});
         }
 
         //checking if ground incharge exists
         const incharge=await User.findOne({userId: req.params.userId});
         if(!incharge){
-            return res.status(404).json({message: "Ground incharge not found."})
+            return res.status(404).json({message: "Ground incharge not found."});
         }
 
-        // Validating start and end time
-        const startTime = req.body.startTime;
-        const endTime = req.body.endTime;
+        const currentTime=new Date();
+        currentTime.setHours(currentTime.getHours()+5);
+        const currentDay=currentTime.getDay();
+        const currentDayIndex=currentDay-1;
 
-        const isValidTimeFormat = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(startTime) && /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(endTime);
-        if (!isValidTimeFormat) {
-            return res.status(400).json({ message: 'Invalid time format. Use hh:mm format.' });
+        const days=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        let dayIndex=-1;
+        for(let i=0; i<7; i++){
+            if(days[i]===day.dayId){
+                dayIndex=i;
+                break;
+            }
         }
 
-        const startTimeObj = new Date(startTime);
-        const endTimeObj = new Date(endTime);
+        let daysDifference=dayIndex-currentDayIndex;
+        if(daysDifference<0){
+            daysDifference+=7;
+        }
 
-        const slots=ground.slots;
-        // for(let i=0; i<slots.length; i++){
-        //     const existingSlot = slots[i];
+        if(!isValidTimeFormat(req.body.startTime)){
+            return res.status(400).json({message: "Invalid start time."});
+        }
 
-        //     const existingStartTimeObj = new Date(`2023-01-01T${existingSlot.startTime}:00Z`);
-        //     const existingEndTimeObj = new Date(`2023-01-01T${existingSlot.endTime}:00Z`);
+        if(!isValidTimeFormat(req.body.endTime)){
+            return res.status(400).json({message: "Invalid end time."});
+        }
 
-        //     console.log("Start time: " + startTimeObj)
-        //     console.log("Existing Start time: " + existingStartTimeObj)
-        //     console.log("End time: " + endTimeObj)
-        //     console.log("Existing End time: " + existingEndTimeObj)
-        //     console.log(startTimeObj==existingStartTimeObj)
-        //     console.log(startTimeObj==existingEndTimeObj)
+        if(!isValidTimeGap(req.body.startTime, req.body.endTime)){
+            return res.status(400).json({message: "Invalid time gap. Must be 30 to 120 minutes."});
+        }
 
-        //     // Check for time conflicts
-        //     // if (
-        //     //     (startTimeObj >= existingStartTimeObj && startTimeObj < existingEndTimeObj) || // New slot starts within existing slot
-        //     //     (endTimeObj > existingStartTimeObj && endTimeObj <= existingEndTimeObj) || // New slot ends within existing slot
-        //     //     (startTimeObj <= existingStartTimeObj && endTimeObj >= existingEndTimeObj) // New slot completely encompasses existing slot
-        //     // ) {
-        //     //     return res.status(400).json({ message: 'Time conflict with existing slots.' });
-        //     // }
+        const startTimeObj = new Date();
 
-        //     if (
-        //         (startTimeObj == existingStartTimeObj || (startTimeObj>existingStartTimeObj && startTimeObj<existingEndTimeObj)) || 
-        //         (endTimeObj > existingStartTimeObj && endTimeObj <= existingEndTimeObj)
-        //     ) {
-        //         return res.status(400).json({ message: 'Time conflict with existing slots.' });
-        //     }
-        // }
+        startTimeObj.setDate(startTimeObj.getDate()+daysDifference);
+        const [startTimeHours, startTimeMinutes]=req.body.startTime.split(':');
+        startTimeObj.setHours(0, 0, 0);
+        startTimeObj.setHours(startTimeObj.getHours() + 5 + parseInt(startTimeHours), startTimeObj.getMinutes() + parseInt(startTimeMinutes));
+
+        const endTimeObj = new Date();
+        endTimeObj.setDate(endTimeObj.getDate()+daysDifference);
+        const [endTimeHours, endTimeMinutes]=req.body.endTime.split(':');
+        endTimeObj.setHours(0, 0, 0);
+        endTimeObj.setHours(endTimeObj.getHours() + 5 + parseInt(endTimeHours), endTimeObj.getMinutes() + parseInt(endTimeMinutes));
+
+        if(endTimeObj < startTimeObj){
+            endTimeObj.setDate(endTimeObj.getDate()+1);
+        }
+
+        const slots=day.slots;
+
+        if(isSlotClashing(startTimeObj, endTimeObj, slots)){
+            return res.status(400).json({message: "The slot is clashing with existing slot."});
+        }
+
+        const lastSlot = await Slot.findOne().sort({ _id: -1 }).select('slotId').lean();
+        const lastId = lastSlot ? parseInt(lastSlot.slotId[4]) : 0;
+        const id=(day.dayId[0]+day.dayId[1]+day.dayId[2]+'-'+(lastId+1)).toLowerCase();
     
         const slot=await Slot.create({
-            slotId: slots.length+1,
+            slotId: id,
             rate: req.body.rate,
             startTime: startTimeObj,
             endTime: endTimeObj,
             status: "Available"
         });
 
-        ground.slots.push(slot._id);
-        ground.save();
+        day.slots.push(slot._id);
+        day.save();
     
         res.status(200).json({message: "Slot successfully created!", slot});
     } catch (error) {
         if(error.name==='ValidationError'){
             return res.status(400).json({message: Object.values(error.errors)[0].message});
         }
-        else if (error.name==='MongoServerError' && error.code===11000) {
+        else if(error.name==='MongoServerError' && error.code===11000) {
             return res.status(409).json({ message: 'Slot already exists.' });
         }
         
@@ -105,62 +123,69 @@ const createSlot = async (req, res) => {
     }
 }
 
-const getAllSlots = async (req, res, next) => {
+const getAllSlots = async (req, res) => {
     try {
         //checking if country exists
         const country=await Country.findOne({countryId: req.params.countryId});
         if(!country){
-            return res.status(404).json({message: "Country not found."})//Not Found
+            return res.status(404).json({message: "Country not found."});
         }
 
         //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
-            return res.status(404).json({message: "City not found."})//Not Found
+            return res.status(404).json({message: "City not found."});
         }
 
         //checking if ground exists
-        const ground=await Ground.findOne({groundId: req.params.groundId}).populate('slots');;
+        const ground=await Ground.findOne({groundId: req.params.groundId});
         if(!ground){
-            return res.status(404).json({message: "Ground not found."})//Not Found
+            return res.status(404).json({message: "Ground not found."});
         }
 
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        //checking if day exists
+        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
+        if(!day){
+            return res.status(404).json({message: "Day not found."})
+        }
 
-        const skip = (page - 1) * limit;
+        const slots = day.slots;
 
-        const slots = ground.slots.slice(skip, skip + limit);
-    
-        res.status(200).json({page, totalSlots: ground.slots.length, totalPages: Math.ceil(ground.slots.length/limit), slots});
+        res.status(200).json(slots);
     } catch (error) {
         res.status(500).json({message: 'Unable to get slots.'});
     }
 }
 
-const getSlot = async (req, res, next) => {
+const getSlot = async (req, res) => {
     try {
       //checking if country exists
       const country=await Country.findOne({countryId: req.params.countryId});
       if(!country){
-          return res.status(404).json({message: "Country not found."})//Not Found
+          return res.status(404).json({message: "Country not found."});
       }
 
       //checking if city exists
       const city=await City.findOne({cityId: req.params.cityId});
       if(!city){
-          return res.status(404).json({message: "City not found."})//Not Found
+          return res.status(404).json({message: "City not found."});
       }
 
       //checking if ground exists
-      const ground=await Ground.findOne({groundId: req.params.groundId}).populate('slots');
+      const ground=await Ground.findOne({groundId: req.params.groundId});
       if(!ground){
-          return res.status(404).json({message: "Ground not found."})//Not Found
+          return res.status(404).json({message: "Ground not found."});
+      }
+
+      //checking if day exists
+      const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
+      if(!day){
+          return res.status(404).json({message: "Day not found."});
       }
   
-      const slot = ground.slots.find((slot) => slot.slotId == req.params.id);
+      const slot = day.slots.find((slot) => slot.slotId == req.params.id);
   
-      if (!slot) {
+      if(!slot) {
         return res.status(404).json({message: 'Slot not found.'});
       }
   
@@ -282,28 +307,34 @@ const deleteSlot = async (req, res) => {
         //checking if country exists
         const country=await Country.findOne({countryId: req.params.countryId});
         if(!country){
-          return res.status(404).json({message: "Country not found."})//Not Found
+          return res.status(404).json({message: "Country not found."});
         }
 
         //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
-          return res.status(404).json({message: "City not found."})//Not Found
+          return res.status(404).json({message: "City not found."});
         }
 
         //checking if ground exists
-        const ground=await Ground.findOne({groundId: req.params.groundId}).populate('slots');
+        const ground=await Ground.findOne({groundId: req.params.groundId});
         if(!ground){
-          return res.status(404).json({message: "Ground not found."})//Not Found
+          return res.status(404).json({message: "Ground not found."});
         }
 
-        const slotIndex = ground.slots.indexOf(ground.slots.find(slot => slot.slotId == req.params.id));
-        if (slotIndex === -1) {
+        //checking if day exists
+        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
+        if(!day){
+            return res.status(404).json({message: "Day not found."});
+        }
+
+        const slotIndex = day.slots.indexOf(day.slots.find(slot => slot.slotId == req.params.id));
+        if(slotIndex===-1) {
             return res.status(404).json({message: 'Slot not found in this ground'});
         }
 
-        ground.slots.splice(slotIndex, 1);
-        await ground.save();
+        day.slots.splice(slotIndex, 1);
+        await day.save();
 
         const slot=await Slot.findOneAndDelete({slotId: req.params.id});
 

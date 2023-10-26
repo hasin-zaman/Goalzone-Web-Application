@@ -73,7 +73,7 @@ const getCountry = async (req, res) => {
     }
 }
 
-const updateCountry = async (req, res, next) => {
+const updateCountry = async (req, res) => {
     try {
         const country=await Country.findOne({countryId: req.params.id});
         if(!country){
@@ -113,11 +113,13 @@ const updateCountry = async (req, res, next) => {
 
 const deleteCountry = async (req, res, next) => {
     try {
-        const country = await Country.findOneAndDelete({countryId: req.params.id});
-        
-        if (!country) {
-            return res.status(404).json({ message: "This country does not exist."});
+        //finding and checking if country exists
+        const country=await Country.findOne({countryId: req.params.id});
+        if(!country){
+            return res.status(404).json({message: "This country does not exist."});
         }
+
+        await Country.findOneAndDelete({countryId: req.params.id});
 
         res.status(200).json({message: "Country successfully deleted!", country});
     } catch (error) {
