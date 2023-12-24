@@ -1,36 +1,12 @@
-const Country = require('../models/countryModel');
-const City = require('../models/cityModel');
+const Country = require('../../models/countryModel');
+const City = require('../../models/cityModel');
+const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
-//main
-const getActiveCities = async (req, res) => {
-    try { // checking if countryId correct
-        const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
-        if (!country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
-        }
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
-
-        const skip = (page - 1) * limit;
-
-        const cities = country.cities.filter((city=>city.status==="Active")).slice(skip, skip + limit);
-
-        const totalCities=await City.countDocuments({status: 'Active'})
-        
-        res.status(200).json({page, totalCities, totalPages: Math.ceil(totalCities/limit), cities});
-    } catch (error) {
-        res.status(500).json({message: 'Unable to get active cities.'});
-    }
-}
-
-//admin
-const addCity = async (req, res) => {
-    try {
-        // checking if countryId correct
+const addCity = controllerWrapper(
+    async (req, res) => {
         const country = await Country.findOne({countryId: req.params.countryId});
         if (!country) {
-            return res.status(404).json({message: "Country not found."}) //Not Found
+            return res.status(404).json({message: "Country not found."})
         }
 
         const city = await City.create({
@@ -44,24 +20,15 @@ const addCity = async (req, res) => {
         country.save();
 
         res.status(200).json({message: "City successfully added!", city});
-    } 
-    catch(error) {
-        if(error.name==='ValidationError'){
-            return res.status(400).json({message: Object.values(error.errors)[0].message});
-        }
-        else if (error.name==='MongoServerError' && error.code===11000) {
-            return res.status(409).json({ message: 'City already exists.' });
-        }
+    }, 
+    "Unable to add city."
+)
 
-        res.status(500).json({message: "Unable to add city."})
-    }
-}
-
-const getAllCities = async (req, res) => {
-    try { // checking if countryId correct
+const getAllCities = controllerWrapper(
+    async (req, res) => {
         const country = await Country.findOne({countryId: req.params.countryId}).populate({path: 'cities', populate: {path: 'grounds', select: 'groundName'}});
-        if (! country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
+        if (!country) {
+            return res.status(404).json({message: "Country not found."})
         }
 
         const page = parseInt(req.query.page) || 1;
@@ -71,13 +38,12 @@ const getAllCities = async (req, res) => {
 
         const cities = country.cities.slice(skip, skip + limit);
         res.status(200).json({page, totalCities: country.cities.length, totalPages: Math.ceil(country.cities.length/limit), cities});
-    } catch (error) {
-        res.status(500).json({message: 'Unable to get cities.'});
-    }
-}
+    }, 
+    "Unable to get cities."
+)
 
-const getCity = async (req, res) => {
-    try {
+const getCity = controllerWrapper(
+    async (req, res) => {
         const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
         if (!country) {
             return res.status(404).json({message: 'Country not found.'});
@@ -89,13 +55,12 @@ const getCity = async (req, res) => {
         }
 
         res.status(200).json(city);
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-}
+    }, 
+    "Unable to get city."
+)
 
-const updateCity = async (req, res) => {
-    try {
+const updateCity = controllerWrapper(
+    async (req, res) => {
         const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
         if (!country) {
             return res.status(404).json({message: 'Country not found.'});
@@ -125,20 +90,12 @@ const updateCity = async (req, res) => {
 
         const updatedCity=await city.save();
         res.status(200).json({message: "City successfully updated!", updatedCity});
-    } catch (error) {
-        if(error.name==='ValidationError'){
-            return res.status(400).json({message: Object.values(error.errors)[0].message});
-        }
-        else if (error.name==='MongoServerError' && error.code===11000) {
-            return res.status(409).json({ message: 'City already exists.' });
-        }
+    }, 
+    "Unable to update city."
+)
 
-        res.status(500).json({ message: error.message});
-    }
-}
-
-const deleteCity = async (req, res) => {
-    try {
+const deleteCity = controllerWrapper(
+    async (req, res) => {
         const country=await Country.findOne({countryId: req.params.countryId}).populate('cities');
         if(!country){
               return res.status(404).json({message: "Country not found."})
@@ -155,16 +112,8 @@ const deleteCity = async (req, res) => {
         const city=await City.findOneAndDelete({cityId: req.params.id});
 
         res.status(200).json({message: 'City deleted successfully', city});
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-};
+    }, 
+    "Unable to delete city."
+)
 
-module.exports={
-    getActiveCities,
-    addCity,
-    getAllCities,
-    getCity,
-    updateCity,
-    deleteCity
-};
+module.exports={addCity, getAllCities, getCity, updateCity, deleteCity};

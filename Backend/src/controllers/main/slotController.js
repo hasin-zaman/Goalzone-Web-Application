@@ -1,33 +1,29 @@
-const Country=require('../models/countryModel');
-const City=require('../models/cityModel');
-const Ground=require('../models/groundModel');
-const Day=require('../models/dayModel');
-const Slot=require('../models/slotModel');
-const User=require('../models/userModel');
-const { isValidTimeFormat, isValidTimeGap, isSlotClashing }=require('../utils/slotValidation');
+const Country=require('../../models/countryModel');
+const City=require('../../models/cityModel');
+const Ground=require('../../models/groundModel');
+const Day=require('../../models/dayModel');
+const Slot=require('../../models/slotModel');
+const User=require('../../models/userModel');
+const { isValidTimeFormat, isValidTimeGap, isSlotClashing }=require('../../utils/validations/slotValidation');
+const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
-//main
-const createSlot = async (req, res) => {
-    try {
-        //checking if country exists
+const createSlot = controllerWrapper(
+    async (req, res) => {
         const country=await Country.findOne({countryId: req.params.countryId});
         if(!country){
             return res.status(404).json({message: "Country not found."});
         }
 
-        //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
             return res.status(404).json({message: "City not found."});
         }
 
-        //checking if ground exists
         const ground=await Ground.findOne({groundId: req.params.groundId});
         if(!ground){
             return res.status(404).json({message: "Ground not found."});
         }
 
-        //checking if day exists
         const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
         if(!day){
             return res.status(404).json({message: "Day not found."});
@@ -110,40 +106,27 @@ const createSlot = async (req, res) => {
         day.save();
     
         res.status(200).json({message: "Slot successfully created!", slot});
-    } catch (error) {
-        if(error.name==='ValidationError'){
-            return res.status(400).json({message: Object.values(error.errors)[0].message});
-        }
-        else if(error.name==='MongoServerError' && error.code===11000) {
-            return res.status(409).json({ message: 'Slot already exists.' });
-        }
-        
-        res.status(500).json({message: "Unable to create slot."})
-        
-    }
-}
+    }, 
+    "Unable to create slot."
+)
 
-const getAllSlots = async (req, res) => {
-    try {
-        //checking if country exists
+const getAllSlots = controllerWrapper(
+    async (req, res) => {
         const country=await Country.findOne({countryId: req.params.countryId});
         if(!country){
             return res.status(404).json({message: "Country not found."});
         }
 
-        //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
             return res.status(404).json({message: "City not found."});
         }
 
-        //checking if ground exists
         const ground=await Ground.findOne({groundId: req.params.groundId});
         if(!ground){
             return res.status(404).json({message: "Ground not found."});
         }
 
-        //checking if day exists
         const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
         if(!day){
             return res.status(404).json({message: "Day not found."})
@@ -152,71 +135,62 @@ const getAllSlots = async (req, res) => {
         const slots = day.slots;
 
         res.status(200).json(slots);
-    } catch (error) {
-        res.status(500).json({message: 'Unable to get slots.'});
-    }
-}
+    }, 
+    "Unable to get slots."
+)
 
-const getSlot = async (req, res) => {
-    try {
-      //checking if country exists
-      const country=await Country.findOne({countryId: req.params.countryId});
-      if(!country){
-          return res.status(404).json({message: "Country not found."});
-      }
-
-      //checking if city exists
-      const city=await City.findOne({cityId: req.params.cityId});
-      if(!city){
-          return res.status(404).json({message: "City not found."});
-      }
-
-      //checking if ground exists
-      const ground=await Ground.findOne({groundId: req.params.groundId});
-      if(!ground){
-          return res.status(404).json({message: "Ground not found."});
-      }
-
-      //checking if day exists
-      const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
-      if(!day){
-          return res.status(404).json({message: "Day not found."});
-      }
-  
-      const slot = day.slots.find((slot) => slot.slotId == req.params.id);
-  
-      if(!slot) {
-        return res.status(404).json({message: 'Slot not found.'});
-      }
-  
-      res.status(200).json(slot);
-    } catch (error) {
-      res.status(500).json({message: error.message});
-    }
-}
-
-const updateSlot = async (req, res) => {
-    try {
-        //checking if country exists
+const getSlot = controllerWrapper(
+    async (req, res) => {
         const country=await Country.findOne({countryId: req.params.countryId});
         if(!country){
-          return res.status(404).json({message: "Country not found."})//Not Found
+            return res.status(404).json({message: "Country not found."});
         }
 
-        //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
-          return res.status(404).json({message: "City not found."})//Not Found
+            return res.status(404).json({message: "City not found."});
         }
 
-        //checking if ground exists
+        const ground=await Ground.findOne({groundId: req.params.groundId});
+        if(!ground){
+            return res.status(404).json({message: "Ground not found."});
+        }
+
+        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
+        if(!day){
+            return res.status(404).json({message: "Day not found."});
+        }
+  
+        const slot = day.slots.find((slot) => slot.slotId == req.params.id);
+  
+        if(!slot) {
+            return res.status(404).json({message: 'Slot not found.'});
+        }
+  
+        res.status(200).json(slot);
+    }, 
+    "Unable to get slot."
+)
+
+const updateSlot = controllerWrapper(
+    async (req, res) => {
+        const country=await Country.findOne({countryId: req.params.countryId});
+        if(!country){
+          return res.status(404).json({message: "Country not found."})
+        }
+
+        const city=await City.findOne({cityId: req.params.cityId});
+        if(!city){
+          return res.status(404).json({message: "City not found."})
+        }
+
         const ground=await Ground.findOne({groundId: req.params.groundId}).populate('slots');
         if(!ground){
-          return res.status(404).json({message: "Ground not found."})//Not Found
+          return res.status(404).json({message: "Ground not found."})
         }
 
         let slot = ground.slots.find((slot) => slot.slotId == req.params.id);
-        if (!slot) {
+        if(!slot) {
             return res.status(404).json({message: 'Slot not found.'});
         }
 
@@ -242,26 +216,26 @@ const updateSlot = async (req, res) => {
         }
 
         const isValidTimeFormat = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(startTime) && /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(endTime);
-        if (!isValidTimeFormat) {
+        if(!isValidTimeFormat) {
             return res.status(400).json({ message: 'Invalid time format. Use hh:mm format.' });
         }
 
         const startTimeObj = new Date(`1970-01-01T${startTime}:00Z`);
         const endTimeObj = new Date(`1970-01-01T${endTime}:00Z`);
 
-        if (endTimeObj < startTimeObj) {
+        if(endTimeObj < startTimeObj) {
             endTimeObj.setDate(endTimeObj.getDate() + 1);
         }
 
-        if (startTimeObj >= endTimeObj) {
+        if(startTimeObj >= endTimeObj) {
             return res.status(400).json({ message: 'End time must be after start time.' });
         }
 
         const timeDifferenceInMinutes = (endTimeObj - startTimeObj) / 60000; // Convert milliseconds to minutes
-        if (timeDifferenceInMinutes < 30) {
+        if(timeDifferenceInMinutes < 30) {
             return res.status(400).json({ message: 'Minimum allowed gap between start and end time is 30 minutes.' });
         }
-        if (timeDifferenceInMinutes > 120) {
+        if(timeDifferenceInMinutes > 120) {
             return res.status(400).json({ message: 'Maximum allowed gap between start and end time is 2 hours.' });
         }
 
@@ -273,7 +247,7 @@ const updateSlot = async (req, res) => {
             const existingEndTimeObj = new Date(`1970-01-01T${existingSlot.endTime}:00Z`);
 
             // Check for time conflicts
-            if (
+            if(
                 (startTimeObj >= existingStartTimeObj && startTimeObj < existingEndTimeObj) || // New slot starts within existing slot
                 (endTimeObj > existingStartTimeObj && endTimeObj <= existingEndTimeObj) || // New slot ends within existing slot
                 (startTimeObj <= existingStartTimeObj && endTimeObj >= existingEndTimeObj) // New slot completely encompasses existing slot
@@ -290,39 +264,27 @@ const updateSlot = async (req, res) => {
         const updatedSlot=await slot.save();
 
         res.status(200).json({message: "Slot successfully updated!", updatedSlot});
-    } catch (error) {
-        if(error.name==='ValidationError'){
-            return res.status(400).json({message: Object.values(error.errors)[0].message});
-        }
-        else if (error.name==='MongoServerError' && error.code===11000) {
-            return res.status(409).json({ message: 'Slot already exists.' });
-        }
+    }, 
+    "Unable to update slot."
+)
 
-        res.status(500).json({message: error.message});
-    }
-};
-
-const deleteSlot = async (req, res) => {
-    try {
-        //checking if country exists
+const deleteSlot = controllerWrapper(
+    async (req, res) => {
         const country=await Country.findOne({countryId: req.params.countryId});
         if(!country){
           return res.status(404).json({message: "Country not found."});
         }
 
-        //checking if city exists
         const city=await City.findOne({cityId: req.params.cityId});
         if(!city){
           return res.status(404).json({message: "City not found."});
         }
 
-        //checking if ground exists
         const ground=await Ground.findOne({groundId: req.params.groundId});
         if(!ground){
           return res.status(404).json({message: "Ground not found."});
         }
 
-        //checking if day exists
         const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
         if(!day){
             return res.status(404).json({message: "Day not found."});
@@ -339,15 +301,8 @@ const deleteSlot = async (req, res) => {
         const slot=await Slot.findOneAndDelete({slotId: req.params.id});
 
         res.status(200).json({message: 'Slot successfully deleted!', slot});
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-};
+    }, 
+    "Unable to delete slot."
+)
 
-module.exports={
-    createSlot,
-    getAllSlots,
-    getSlot,
-    updateSlot,
-    deleteSlot
-};
+module.exports={createSlot, getAllSlots, getSlot, updateSlot, deleteSlot};

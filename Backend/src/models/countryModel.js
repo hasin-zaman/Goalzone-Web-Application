@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const City=require('../models/cityModel');
-const imageValidation = require('../utils/imageValidation');
+const imageValidation = require('../utils/validations/imageValidation');
 
 const countrySchema = mongoose.Schema(
     {

@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
-const emailValidation = require('../utils/emailValidation');
-const nameValidation = require('../utils/nameValidation');
+const emailValidation = require('../utils/validations/emailValidation');
+const nameValidation = require('../utils/validations/nameValidation');
 
 const contactSchema = mongoose.Schema(
     {

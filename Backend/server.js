@@ -4,15 +4,8 @@ require('dotenv').config();
 const cors=require('cors');
 const helmet=require('helmet');
 const mongoose=require('mongoose');
-const UserRoutes=require('./src/routes/userRoutes');
-const ContactRoutes=require('./src/routes/contactRoutes');
-const TeamRoutes=require('./src/routes/teamRoutes');
-const CountryRoutes=require('./src/routes/countryRoutes');
-const CityRoutes=require('./src/routes/cityRoutes');
-const GroundRoutes=require('./src/routes/groundRoutes');
-const ReviewRoutes=require('./src/routes/reviewRoutes');
-const DayRoutes=require('./src/routes/dayRoutes');
-const SlotRoutes=require('./src/routes/slotRoutes');
+const MainRoutes=require('./src/routes/mainRoutes');
+const AdminRoutes=require('./src/routes/adminRoutes');
 
 app.use(express.json());
 
@@ -41,7 +34,6 @@ mongoose.connect(process.env.MONGO_LINK).then(()=>{
     console.log(error);
 });
 
-//routes
 app.get('/',(req,res)=>{
     res.send('Goalzone : Home');
 });
@@ -56,20 +48,6 @@ app.get('/health', (req, res) => {
     res.status(200).send(data);
 });
 
-app.use('/', UserRoutes);
+app.use('/', MainRoutes);
 
-app.use('/', ContactRoutes);
-
-app.use('/', TeamRoutes);
-
-app.use('/', CountryRoutes);
-
-app.use('/', CityRoutes);
-
-app.use('/', GroundRoutes);
-
-app.use('/', ReviewRoutes);
-
-app.use('/', DayRoutes);
-
-app.use('/', SlotRoutes);
+app.use('/', AdminRoutes);

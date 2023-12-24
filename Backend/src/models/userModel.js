@@ -1,10 +1,10 @@
 const mongoose=require('mongoose');
-const ageValidation = require('../utils/ageValidation');
-const emailValidation = require('../utils/emailValidation');
-const imageValidation = require('../utils/imageValidation');
-const nameValidation = require('../utils/nameValidation');
-const phoneValidation = require('../utils/phoneValidation');
-const Positions = require('../utils/positions');
+const ageValidation = require('../utils/validations/ageValidation');
+const emailValidation = require('../utils/validations/emailValidation');
+const imageValidation = require('../utils/validations/imageValidation');
+const nameValidation = require('../utils/validations/nameValidation');
+const phoneValidation = require('../utils/validations/phoneValidation');
+const Positions = require('../utils/enums/positions');
 
 const userSchema = mongoose.Schema(
     {

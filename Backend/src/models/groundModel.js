@@ -1,14 +1,14 @@
 const mongoose=require('mongoose');
 const Review=require('../models/reviewModel');
 const Day=require('../models/dayModel');
-const emailValidation = require('../utils/emailValidation');
-const establishedInYearValidation = require('../utils/establishedInYearValidation');
-const facebookHandleValidation = require('../utils/facebookHandleValidation');
-const imageValidation = require('../utils/imageValidation');
-const instaHandleValidation = require('../utils/instaHandleValidation');
-const nameValidation = require('../utils/nameValidation');
-const phoneValidation = require('../utils/phoneValidation');
-const webUrlValidation = require('../utils/webUrlValidation');
+const emailValidation = require('../utils/validations/emailValidation');
+const establishedInYearValidation = require('../utils/validations/establishedInYearValidation');
+const facebookHandleValidation = require('../utils/validations/facebookHandleValidation');
+const imageValidation = require('../utils/validations/imageValidation');
+const instaHandleValidation = require('../utils/validations/instaHandleValidation');
+const nameValidation = require('../utils/validations/nameValidation');
+const phoneValidation = require('../utils/validations/phoneValidation');
+const webUrlValidation = require('../utils/validations/webUrlValidation');
 
 const groundSchema = mongoose.Schema(
     {

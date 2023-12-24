@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 const Ground=require('../models/groundModel');
-const cityIdValidation=require('../utils/cityIdValidation');
-const imageValidation = require('../utils/imageValidation');
+const cityIdValidation=require('../utils/validations/cityIdValidation');
+const imageValidation = require('../utils/validations/imageValidation');
 
 const citySchema = mongoose.Schema(
     {
