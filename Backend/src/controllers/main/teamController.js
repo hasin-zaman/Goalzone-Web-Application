@@ -58,30 +58,21 @@ const getActiveTeams = controllerWrapper(
 
 const getActiveTeam = controllerWrapper(
     async (req, res) => {
-        const team=await Team.findOne({teamId: req.params.id, status: "Active"}).populate("captain", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age").populate("players", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age").populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
-        if(!team){
-            return res.status(404).json({message: "This Team does not exist"});
-        }
-
+        const team = req.team;
         res.status(200).json(team);
     }, 
     "Unable to get team."
 )
 
 const updateMyTeam = controllerWrapper(
-    async (req, res) => {
-        let team=await Team.findOne({teamId: req.params.id});
-        if(!team){
-            return res.status(404).json({message: "Team does not exist."});
-        }
-
+    async (req, res) => {    
         const user=await User.findOne({userId: req.params.userId});
         if(!user){
             return res.status(404).json({message: "User not found."});
         }
 
         //disallowing updating teamId which are supposed to stay unique
-        if(req.body.hasOwnProperty('teamId') && req.body.teamId!=req.params.id){
+        if(req.body.hasOwnProperty('teamId') && req.body.teamId!=req.params.teamId){
             return res.status(400).json({message: "Changing team id is not allowed."});
         }
 
@@ -90,9 +81,9 @@ const updateMyTeam = controllerWrapper(
             return res.status(400).json({message: "Captain, Players, and Requests properties cannot be updated like this."});
         }
 
-        team=await Team.findOneAndUpdate({teamId: req.params.id}, req.body, {runValidators: true});
+        await Team.findOneAndUpdate({teamId: req.params.teamId}, req.body, {runValidators: true});
 
-        const updatedTeam=await Team.findOne({teamId: req.params.id});
+        const updatedTeam=await Team.findOne({teamId: req.params.teamId});
         res.status(200).json({message: "Team successfully updated!", updatedTeam});
     }, 
     "Unable to update team."
@@ -100,7 +91,7 @@ const updateMyTeam = controllerWrapper(
 
 const deleteMyTeam = controllerWrapper(
     async (req, res) => {
-        const team = await Team.findOneAndDelete({teamId: req.params.id});
+        const team = await Team.findOneAndDelete({teamId: req.params.teamId});
         if (!team) {
             return res.status(404).json({ message: "This team does not exist."});
         }
@@ -112,10 +103,7 @@ const deleteMyTeam = controllerWrapper(
 
 const sendRequest = controllerWrapper(
     async (req, res) => {
-        let team=await Team.findOne({teamId: req.params.id});
-        if(!team){
-            return res.status(404).json({message: "Team does not exist."});
-        }
+        let team = req.team;
 
         const user=await User.findOne({userId: req.params.userId});
         if(!user){
@@ -133,9 +121,9 @@ const sendRequest = controllerWrapper(
         }
 
         //adding request to join
-        team=await Team.findOneAndUpdate({teamId: req.params.id}, {$addToSet:{requests: user._id}});
+        team=await Team.findOneAndUpdate({teamId: req.params.teamId}, {$addToSet:{requests: user._id}});
 
-        const updatedTeam=await Team.findOne({teamId: req.params.id});
+        const updatedTeam=await Team.findOne({teamId: req.params.teamId});
         res.status(200).json({message: "Request to join team has been submitted.", updatedTeam});
     }, 
     "Unable to send request."
@@ -143,10 +131,7 @@ const sendRequest = controllerWrapper(
 
 const unsendRequest = controllerWrapper(
     async (req, res) => {
-        let team=await Team.findOne({teamId: req.params.id});
-        if(!team){
-            return res.status(404).json({message: "Team does not exist."});
-        }
+        let team = req.team;
 
         const user=await User.findOne({userId: req.params.userId});
         if(!user){
@@ -159,9 +144,9 @@ const unsendRequest = controllerWrapper(
         }
 
         //deleting request to join
-        team=await Team.findOneAndUpdate({teamId: req.params.id}, {$pull:{requests: user._id}});
+        team=await Team.findOneAndUpdate({teamId: req.params.teamId}, {$pull:{requests: user._id}});
 
-        const updatedTeam=await Team.findOne({teamId: req.params.id});
+        const updatedTeam=await Team.findOne({teamId: req.params.teamId});
         res.status(200).json({message: "Request to join team has been cancelled.", updatedTeam});
     }, 
     "Unable to unsend request."
@@ -169,7 +154,7 @@ const unsendRequest = controllerWrapper(
 
 const approveRequest = controllerWrapper(
     async (req, res) => {
-        let team=await Team.findOne({teamId: req.params.id});
+        let team = req.team;
         let user=await User.findOne({userId: req.params.requestId});
         if(team && team.requests && !team.requests.some((request=>request.equals(user._id)))){
             return res.status(404).json({message: "Request not found."});
@@ -192,12 +177,12 @@ const approveRequest = controllerWrapper(
         }
 
         //removing request to join
-        team=await Team.findOneAndUpdate({teamId: req.params.id}, {$pull:{requests: user._id}});
+        team=await Team.findOneAndUpdate({teamId: req.params.teamId}, {$pull:{requests: user._id}});
 
         //approving request by adding user to players
-        team=await Team.findOneAndUpdate({teamId: req.params.id}, {$addToSet:{players: user._id}});
+        team=await Team.findOneAndUpdate({teamId: req.params.teamId}, {$addToSet:{players: user._id}});
 
-        const updatedTeam=await Team.findOne({teamId: req.params.id}).populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
+        const updatedTeam=await Team.findOne({teamId: req.params.teamId}).populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
         res.status(200).json({message: "Request to join team has been approved.", updatedTeam});
     }, 
     "Unable to approve request."
@@ -205,7 +190,7 @@ const approveRequest = controllerWrapper(
 
 const declineRequest = controllerWrapper(
     async (req, res) => {
-        let team=await Team.findOne({teamId: req.params.id});
+        let team = req.team;
         const user=await User.findOne({userId: req.params.requestId});
         if(team && team.requests && !team.requests.some((request=>request.equals(user._id)))){
             return res.status(404).json({message: "Request not found."});
@@ -218,9 +203,9 @@ const declineRequest = controllerWrapper(
         }
 
         //declining request by removing it from requests
-        team=await Team.findOneAndUpdate({teamId: req.params.id}, {$pull:{requests: user._id}});
+        team=await Team.findOneAndUpdate({teamId: req.params.teamId}, {$pull:{requests: user._id}});
 
-        const updatedTeam=await Team.findOne({teamId: req.params.id}).populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
+        const updatedTeam=await Team.findOne({teamId: req.params.teamId}).populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
         res.status(200).json({message: "Request to join team has been declined.", updatedTeam});
     }, 
     "Unable to decline request."
@@ -228,10 +213,7 @@ const declineRequest = controllerWrapper(
 
 const leaveTeam = controllerWrapper(
     async (req, res) => {
-        let team=await Team.findOne({teamId: req.params.id});
-        if(!team){
-            return res.status(404).json({message: "Team does not exist."});
-        }
+        let team = req.team;
 
         let user=await User.findOne({userId: req.params.userId});
         if(!user){
@@ -249,7 +231,7 @@ const leaveTeam = controllerWrapper(
         //updating team in user
         user=await User.findOneAndUpdate({userId: req.params.userId, 'teams._id': team._id}, {$set:{'teams.$.endDate': new Date()}});
 
-        const updatedTeam=await Team.findOne({teamId: req.params.id}).populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
+        const updatedTeam=await Team.findOne({teamId: req.params.teamId}).populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
         const updatedUser=await User.findOne({userId: req.params.userId})
         res.status(200).json({message: "Request to leave team has been processed.", updatedTeam, updatedUser});
     }, 

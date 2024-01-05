@@ -4,10 +4,7 @@ const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const addCity = controllerWrapper(
     async (req, res) => {
-        const country = await Country.findOne({countryId: req.params.countryId});
-        if (!country) {
-            return res.status(404).json({message: "Country not found."})
-        }
+        const country = req.country;
 
         const city = await City.create({
             cityId: req.body.cityId,
@@ -26,10 +23,7 @@ const addCity = controllerWrapper(
 
 const getAllCities = controllerWrapper(
     async (req, res) => {
-        const country = await Country.findOne({countryId: req.params.countryId}).populate({path: 'cities', populate: {path: 'grounds', select: 'groundName'}});
-        if (!country) {
-            return res.status(404).json({message: "Country not found."})
-        }
+        const country = req.country;
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -44,12 +38,9 @@ const getAllCities = controllerWrapper(
 
 const getCity = controllerWrapper(
     async (req, res) => {
-        const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
-        if (!country) {
-            return res.status(404).json({message: 'Country not found.'});
-        }
+        const country = req.country;
 
-        const city = country.cities.find((city) => city.cityId === req.params.id);
+        const city = country.cities.find((city) => city.cityId === req.params.cityId);
         if (!city) {
             return res.status(404).json({message: 'City not found.'});
         }
@@ -61,12 +52,9 @@ const getCity = controllerWrapper(
 
 const updateCity = controllerWrapper(
     async (req, res) => {
-        const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
-        if (!country) {
-            return res.status(404).json({message: 'Country not found.'});
-        }
+        const country = req.country;
 
-        const city = country.cities.find((city) => city.cityId === req.params.id);
+        const city = country.cities.find((city) => city.cityId === req.params.cityId);
         if (!city) {
             return res.status(404).json({message: 'City not found.'});
         }
@@ -96,12 +84,9 @@ const updateCity = controllerWrapper(
 
 const deleteCity = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId}).populate('cities');
-        if(!country){
-              return res.status(404).json({message: "Country not found."})
-        }
+        const country = req.country;
 
-        const cityIndex = country.cities.indexOf(country.cities.find(city => city.cityId === req.params.id));
+        const cityIndex = country.cities.indexOf(country.cities.find(city => city.cityId === req.params.cityId));
         if (cityIndex === -1) {
             return res.status(404).json({message: 'City not found in this country.'});
         }

@@ -31,11 +31,7 @@ const getAllCountries = controllerWrapper(
 
 const getCountry = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.id}).populate('cities');
-        if(!country){
-            return res.status(404).json({message: "This country does not exist."});
-        }
-
+        const country = req.country;
         res.status(200).json(country);
     }, 
     "Unable to get country."
@@ -43,10 +39,7 @@ const getCountry = controllerWrapper(
 
 const updateCountry = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.id});
-        if(!country){
-            return res.status(404).json({message: "This country does not exist."});
-        }
+        const country=req.country;
 
         for (const field in req.body) {
             switch (field) {
@@ -73,12 +66,10 @@ const updateCountry = controllerWrapper(
 
 const deleteCountry = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.id});
-        if(!country){
-            return res.status(404).json({message: "This country does not exist."});
+        const country = await Contact.findOneAndDelete({countryId: req.params.countryId});
+        if(!country) {
+            return res.status(404).json({ message: "This country does not exist."});
         }
-
-        await Country.findOneAndDelete({countryId: req.params.id});
 
         res.status(200).json({message: "Country successfully deleted!", country});
     }, 

@@ -50,4 +50,4 @@ app.get('/health', (req, res) => {
 
 app.use('/', MainRoutes);
 
-app.use('/', AdminRoutes);
+app.use('/admin', AdminRoutes);

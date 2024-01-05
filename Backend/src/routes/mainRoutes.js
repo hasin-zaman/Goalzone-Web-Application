@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authentication=require('../middlewares/authentication.js');
 const { checkRole, matchUser }=require('../middlewares/authorization.js');
+const {findOneUser, findOneTeam, findOneCountry, findOneCity, findOneGround, findOneReview, findOneDay, findOneSlot}=require('../middlewares/findOne.js');
 const {signup, login, getProfile, updateMyProfile, deleteMyProfile}=require('../controllers/main/userController');
 const {registerTeam, getActiveTeams, getActiveTeam, updateMyTeam, deleteMyTeam, sendRequest, unsendRequest, approveRequest, declineRequest, leaveTeam}=require('../controllers/main/teamController');
 const {sendMessage}=require('../controllers/main/contactController');
@@ -15,21 +16,25 @@ const {createSlot, getAllSlots, getSlot, updateSlot, deleteSlot}=require('../con
 //user
 router.post('/users/signup', signup);
 router.post('/users/login', login);
-router.get('/users/:userId', getProfile);
-router.patch('/users/:userId', updateMyProfile);
+router.get('/users/:userId', findOneUser({path: 'teams._id', select: 'teamId teamName profileImage captain'}), getProfile);
+router.patch('/users/:userId', findOneUser(), updateMyProfile);
 router.delete('/users/:userId', deleteMyProfile);
 
 //team
 router.post('/teams/:userId', registerTeam);
 router.get('/teams/', getActiveTeams);
-router.get('/teams/:id', getActiveTeam);
-router.patch('/teams/:id/:userId', updateMyTeam);
-router.patch('/teams/:id/send/:userId', sendRequest);
-router.patch('/teams/:id/unsend/:userId', unsendRequest);
-router.patch('/teams/:id/approve/:requestId/:userId', approveRequest);
-router.patch('/teams/:id/decline/:requestId/:userId', declineRequest);
-router.patch('/teams/:id/leaveTeam/:userId', leaveTeam);
-router.delete('/teams/:id', deleteMyTeam);
+router.get('/teams/:teamId', findOneTeam([
+    { path: "captain", select: "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age" },
+    { path: "players", select: "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age" },
+    { path: "requests", select: "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age" }
+], 'Active'), getActiveTeam);
+router.patch('/teams/:teamId/:userId', findOneTeam(), updateMyTeam);
+router.patch('/teams/:teamId/send/:userId', findOneTeam(), sendRequest);
+router.patch('/teams/:teamId/unsend/:userId', findOneTeam(), unsendRequest);
+router.patch('/teams/:teamId/approve/:requestId/:userId', findOneTeam(), approveRequest);
+router.patch('/teams/:teamId/decline/:requestId/:userId', findOneTeam(), declineRequest);
+router.patch('/teams/:teamId/leaveTeam/:userId', findOneTeam(), leaveTeam);
+router.delete('/teams/:teamId', deleteMyTeam);
 
 //contact
 router.post('/contact', sendMessage);
@@ -38,31 +43,37 @@ router.post('/contact', sendMessage);
 router.get('/countries', getActiveCountries);
 
 //city
-router.get('/countries/:countryId/cities', getActiveCities);
+router.get('/countries/:countryId/cities', findOneCountry('cities'), getActiveCities);
 
 //ground
-router.post('/countries/:countryId/cities/:cityId/grounds/:userId', registerGround);
-router.get('/countries/:countryId/cities/:cityId/grounds', getActiveGrounds);
-router.get('/countries/:countryId/cities/:cityId/grounds/:id', getActiveGround);
-router.patch('/countries/:countryId/cities/:cityId/grounds/:id', updateMyGround);
-router.patch('/countries/:countryId/cities/:cityId/grounds/:id', deactivateGround);
+router.post('/countries/:countryId/cities/:cityId/grounds/:userId', findOneCountry(), findOneCity(), registerGround);
+router.get('/countries/:countryId/cities/:cityId/grounds', findOneCountry(), findOneCity({path: 'grounds', populate: {path: 'incharge'}}), getActiveGrounds);
+router.get('/countries/:countryId/cities/:cityId/grounds/:groundId', findOneCountry(), findOneCity({path: 'grounds', populate: [{path: 'incharge'}, {path: 'days'}]}), getActiveGround);
+router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId', findOneCountry(), findOneCity('grounds'), updateMyGround);
+router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId', findOneCountry(), findOneCity('grounds'), deactivateGround);
 
 //review
-router.post('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:userId', postReview);
-router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews', getApprovedReviews);
-router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:id', getApprovedReview);
-router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:id', updateMyReview);
-router.delete('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:id', deleteMyReview);
+router.post('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:userId', findOneCountry(), findOneCity(), findOneGround('reviews'), postReview);
+router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews', findOneCountry(), findOneCity(), findOneGround({
+    path: 'reviews',
+    populate: {
+        path: 'user',
+        select: 'userId firstName lastName role profileImage'
+    }
+}), getApprovedReviews);
+router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:reviewId', findOneCountry(), findOneCity(), findOneGround('reviews'), getApprovedReview);
+router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:reviewId', findOneCountry(), findOneCity(), findOneGround('reviews'), updateMyReview);
+router.delete('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:reviewId', findOneCountry(), findOneCity(), findOneGround('reviews'), deleteMyReview);
 
 //day
-router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days', getAllDays);
-router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId', getDay);
+router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days', findOneCountry(), findOneCity(), findOneGround('days'), getAllDays);
+router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId', findOneCountry(), findOneCity(), findOneGround('days'), getDay);
 
 //slot
-router.post('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:userId', createSlot);
-router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots', getAllSlots);
-router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:id', getSlot);
-router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:id', updateSlot);
-router.delete('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:id', deleteSlot);
+router.post('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:userId', findOneCountry(), findOneCity(), findOneGround(), findOneDay('slots'), createSlot);
+router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots', findOneCountry(), findOneCity(), findOneGround(), findOneDay('slots'), getAllSlots);
+router.get('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:slotId', findOneCountry(), findOneCity(), findOneGround(), findOneDay('slots'), getSlot);
+router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:slotId', findOneCountry(), findOneCity(), findOneGround(), findOneDay('slots'), updateSlot);
+router.delete('/countries/:countryId/cities/:cityId/grounds/:groundId/days/:dayId/slots/:slotId', findOneCountry(), findOneCity(), findOneGround(), findOneDay('slots'), deleteSlot);
 
 module.exports=router;

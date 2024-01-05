@@ -65,11 +65,7 @@ const getAllTeams = controllerWrapper(
 
 const getTeam = controllerWrapper(
     async (req, res) => {
-        const team=await Team.findOne({teamId: req.params.id}).populate("captain", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age").populate("players", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age").populate("requests", "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age");
-        if(!team){
-            return res.status(404).json({message: "This Team does not exist"});
-        }
-
+        const team = req.team;
         res.status(200).json(team);
     }, 
     "Unable to get team."
@@ -77,14 +73,9 @@ const getTeam = controllerWrapper(
 
 const updateTeam = controllerWrapper(
     async (req, res) => {
-        let team=await Team.findOne({teamId: req.params.id});
-        if(!team){
-            return res.status(404).json({message: "Team does not exist."});//Not Found
-        }
-        
-        team=await Team.findOneAndUpdate({teamId: req.params.id}, req.body, {runValidators: true});
+        await Team.findOneAndUpdate({teamId: req.params.teamId}, req.body, {runValidators: true});
 
-        const updatedTeam=await Team.findOne({teamId: req.params.id});
+        const updatedTeam=await Team.findOne({teamId: req.params.teamId});
         res.status(200).json({message: "Team successfully updated!", updatedTeam});
     }, 
     "Unable to update team."
@@ -92,7 +83,7 @@ const updateTeam = controllerWrapper(
 
 const deleteTeam = controllerWrapper(
     async (req, res) => {
-        const team = await Team.findOneAndDelete({teamId: req.params.id});
+        const team = await Team.findOneAndDelete({teamId: req.params.teamId});
         if(!team) {
             return res.status(404).json({ message: "This team does not exist."});
         }

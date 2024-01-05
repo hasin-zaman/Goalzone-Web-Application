@@ -20,11 +20,7 @@ const getAllMessages = controllerWrapper(
 
 const getMessage = controllerWrapper(
     async (req, res) => {
-        const message=await Contact.findOne({ messageId: req.params.id });
-        if(!message){
-            return res.status(404).json({message: "This contact message does not exist"});
-        }
-
+        const message = req.message;
         res.status(200).json(message);
     }, 
     "Unable to get contact message."
@@ -36,13 +32,12 @@ const updateStatusToRead = controllerWrapper(
             return res.status(400).json({ message: "Request body is not allowed." });
         }
 
-        const message=await Contact.findOneAndUpdate({messageId: req.params.id}, {status: 'Read'}, {runValidators: true});
-        
+        const message=await Contact.findOneAndUpdate({messageId: req.params.messageId}, {status: 'Read'}, {runValidators: true});
         if(!message) {
             return res.status(404).json({ message: "This message does not exist."});
         }
 
-        const updatedMessage=await Contact.findOne({ messageId: req.params.id });
+        const updatedMessage=await Contact.findOne({ messageId: req.params.messageId });
 
         res.status(200).json({message: "Message status successfully updated to 'Read'!", updatedMessage});
     }, 
@@ -55,13 +50,12 @@ const updateStatusToResponded = controllerWrapper(
             return res.status(400).json({ message: "Request body is not allowed." });
         }
 
-        const message=await Contact.findOneAndUpdate({messageId: req.params.id}, {status: 'Responded'}, {runValidators: true});
-        
+        const message=await Contact.findOneAndUpdate({messageId: req.params.messageId}, {status: 'Responded'}, {runValidators: true});
         if(!message) {
             return res.status(404).json({ message: "This message does not exist."});
         }
         
-        const updatedMessage=await Contact.findOne({ messageId: req.params.id });
+        const updatedMessage=await Contact.findOne({ messageId: req.params.messageId });
 
         res.status(200).json({message: "Message status successfully updated to 'Responded'!", updatedMessage});
     }, 
@@ -70,7 +64,7 @@ const updateStatusToResponded = controllerWrapper(
 
 const deleteMessage = controllerWrapper(
     async (req, res) => {
-        const message = await Contact.findOneAndDelete({messageId: req.params.id});
+        const message = await Contact.findOneAndDelete({messageId: req.params.messageId});
         if(!message) {
             return res.status(404).json({ message: "This message does not exist."});
         }

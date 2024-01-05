@@ -77,13 +77,7 @@ const login = controllerWrapper(
 
 const getProfile = controllerWrapper(
     async (req, res) => {
-        //parsing string req.params to int as userId is stored as int
-        const userId=parseInt(req.params.userId);
-
-        const user=await User.findOne({userId: userId}).populate("teams._id", "teamId teamName profileImage captain");
-        if(!user){
-            return res.status(404).json({message: "User with id " + userId + " does not exist"})
-        }
+        const user = req.user;
 
         res.status(200).json(user);
     }, 
@@ -92,13 +86,7 @@ const getProfile = controllerWrapper(
 
 const updateMyProfile = controllerWrapper(
     async (req, res) => {
-        //parsing string req.params to int as userId is stored as int
-        const userId=parseInt(req.params.userId);
-
-        let user=await User.findOne({userId: userId});
-        if(!user){
-            return res.status(404).json({message: "User with id " + userId + " does not exist"});
-        }
+        const user=req.user;
 
         if(req.body.hasOwnProperty('role') && req.body.role!==user.role) {
             return res.status(403).json({ message: 'Changing role is not allowed.' });

@@ -6,29 +6,7 @@ const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const getAllReviews = controllerWrapper(
     async (req, res) => {
-        // checking if country exists
-        const country = await Country.findOne({countryId: req.params.countryId});
-        if(!country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
-        }
-
-        // checking if city exists
-        const city = await City.findOne({cityId: req.params.cityId});
-        if(!city) {
-            return res.status(404).json({message: "City not found."}) // Not Found
-        }
-
-        // checking if ground exists
-        const ground = await Ground.findOne({groundId: req.params.groundId}).populate({
-            path: 'reviews',
-            populate: {
-                path: 'user',
-                select: 'userId firstName lastName role profileImage'
-            }
-        });
-        if(!ground) {
-            return res.status(404).json({message: "Ground not found."}) // Not Found
-        }
+        const ground = req.ground;
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -44,31 +22,9 @@ const getAllReviews = controllerWrapper(
 
 const getReview = controllerWrapper(
     async (req, res) => {
-        // checking if country exists
-        const country = await Country.findOne({countryId: req.params.countryId});
-        if(!country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
-        }
+        const ground = req.ground;
 
-        // checking if city exists
-        const city = await City.findOne({cityId: req.params.cityId});
-        if(!city) {
-            return res.status(404).json({message: "City not found."}) // Not Found
-        }
-
-        // checking if ground exists
-        const ground = await Ground.findOne({groundId: req.params.groundId}).populate({
-            path: 'reviews',
-            populate: {
-                path: 'user',
-                select: 'userId firstName lastName role profileImage'
-            }
-        });
-        if(!ground) {
-            return res.status(404).json({message: "Ground not found."}) // Not Found
-        }
-
-        const review = ground.reviews.find((review) => review.reviewId == req.params.id);
+        const review = ground.reviews.find((review) => review.reviewId == req.params.reviewId);
         if(!review) {
             return res.status(404).json({message: 'Review not found.'});
         }
@@ -84,30 +40,14 @@ const approveReview = controllerWrapper(
             return res.status(400).json({message: "Request body is not allowed."});
         }
 
-        // checking if country exists
-        const country = await Country.findOne({countryId: req.params.countryId});
-        if(!country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
-        }
+        const ground =  req.ground;
 
-        // checking if city exists
-        const city = await City.findOne({cityId: req.params.cityId});
-        if(!city) {
-            return res.status(404).json({message: "City not found."}) // Not Found
-        }
-
-        // checking if ground exists
-        const ground = await Ground.findOne({groundId: req.params.groundId}).populate('reviews');
-        if(!ground) {
-            return res.status(404).json({message: "Ground not found."}) // Not Found
-        }
-
-        const review = await Review.findOneAndUpdate({reviewId: req.params.id}, {status: 'Approved'}, {runValidators: true});
+        const review = await Review.findOneAndUpdate({reviewId: req.params.reviewId}, {status: 'Approved'}, {runValidators: true});
         if(!review) {
             return res.status(404).json({message: "Review not found."});
         }
 
-        const updatedReview = await Review.findOne({reviewId: req.params.id});
+        const updatedReview = await Review.findOne({reviewId: req.params.reviewId});
 
         res.status(200).json({message: "Review status successfully updated to 'Approved'!", updatedReview});
     }, 
@@ -120,30 +60,14 @@ const disapproveReview = controllerWrapper(
             return res.status(400).json({message: "Request body is not allowed."});
         }
 
-        // checking if country exists
-        const country = await Country.findOne({countryId: req.params.countryId});
-        if(!country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
-        }
+        const ground =  req.ground;
 
-        // checking if city exists
-        const city = await City.findOne({cityId: req.params.cityId});
-        if(!city) {
-            return res.status(404).json({message: "City not found."}) // Not Found
-        }
-
-        // checking if ground exists
-        const ground = await Ground.findOne({groundId: req.params.groundId}).populate('reviews');
-        if(!ground) {
-            return res.status(404).json({message: "Ground not found."}) // Not Found
-        }
-
-        const review = await Review.findOneAndUpdate({reviewId: req.params.id}, {status: 'Disapproved'}, {runValidators: true});
+        const review = await Review.findOneAndUpdate({reviewId: req.params.reviewId}, {status: 'Disapproved'}, {runValidators: true});
         if(!review) {
             return res.status(404).json({message: "Review not found."});
         }
 
-        const updatedReview = await Review.findOne({reviewId: req.params.id});
+        const updatedReview = await Review.findOne({reviewId: req.params.reviewId});
 
         res.status(200).json({message: "Review status successfully updated to 'Disapproved'!", updatedReview});
     }, 
@@ -152,25 +76,9 @@ const disapproveReview = controllerWrapper(
 
 const deleteReview = controllerWrapper(
     async (req, res) => {
-        // checking if country exists
-        const country = await Country.findOne({countryId: req.params.countryId});
-        if(!country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
-        }
+        const ground =  req.ground;
 
-        // checking if city exists
-        const city = await City.findOne({cityId: req.params.cityId});
-        if(!city) {
-            return res.status(404).json({message: "City not found."}) // Not Found
-        }
-
-        // checking if ground exists
-        const ground = await Ground.findOne({groundId: req.params.groundId}).populate('reviews');
-        if(!ground) {
-            return res.status(404).json({message: "Ground not found."}) // Not Found
-        }
-
-        const reviewIndex = ground.reviews.indexOf(ground.reviews.find(review => review.reviewId == req.params.id));
+        const reviewIndex = ground.reviews.indexOf(ground.reviews.find(review => review.reviewId == req.params.reviewId));
         if(reviewIndex === -1) {
             return res.status(404).json({message: 'Review not found.'});
         }
@@ -178,7 +86,7 @@ const deleteReview = controllerWrapper(
         ground.reviews.splice(reviewIndex, 1);
         await ground.save();
 
-        const review = await Review.findOneAndDelete({reviewId: req.params.id});
+        const review = await Review.findOneAndDelete({reviewId: req.params.reviewId});
 
         res.status(200).json({message: 'Review successfully deleted!', review});
     }, 

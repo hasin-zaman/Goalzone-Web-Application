@@ -1,13 +1,9 @@
-const Country = require('../../models/countryModel');
 const City = require('../../models/cityModel');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const getActiveCities = controllerWrapper(
     async (req, res) => {
-        const country = await Country.findOne({countryId: req.params.countryId}).populate('cities');
-        if (!country) {
-            return res.status(404).json({message: "Country not found."}) // Not Found
-        }
+        const country = req.country
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 5;

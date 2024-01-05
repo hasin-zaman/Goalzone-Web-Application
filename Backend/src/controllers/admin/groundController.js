@@ -7,22 +7,11 @@ const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const addGround = controllerWrapper(
     async (req, res) => {
-        //checking if country exists
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."})//Not Found
-        }
+        const city = req.city;
 
-        //checking if city exists
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-            return res.status(404).json({message: "City not found."})//Not Found
-        }
-
-        //checking if incharge exists
         const incharge=await User.findOne({userId: req.params.inchargeId});
         if(!incharge){
-            return res.status(404).json({message: "Incharge not found. Enter incharge's id in body."})//Not Found
+            return res.status(404).json({message: "Incharge not found. Enter incharge's id in body."})
         }
 
         const grounds=await Ground.find({}).countDocuments();
@@ -78,17 +67,7 @@ const addGround = controllerWrapper(
 
 const getAllGrounds = controllerWrapper(
     async (req, res) => {
-        //checking if country exists
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."})//Not Found
-        }
-
-        //checking if city exists
-        const city=await City.findOne({cityId: req.params.cityId}).populate({path: 'grounds', populate: {path: 'incharge'}});
-        if(!city){
-            return res.status(404).json({message: "City not found."})//Not Found
-        }
+        const city = req.city;
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -104,21 +83,9 @@ const getAllGrounds = controllerWrapper(
 
 const getGround = controllerWrapper(
     async (req, res) => {
-        //checking if country exists
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."})//Not Found
-        }
-
-        const city = await City.findOne({ cityId: req.params.cityId }).populate({path: 'grounds', populate: [ {path: 'incharge'}, {path: 'days'} ]});
-        if(!city) {
-            return res.status(404).json({message: 'City not found.'});
-        }
+        const city = req.city
   
-        const ground = city.grounds.find(
-            (ground) => ground.groundId === req.params.id
-        );
-  
+        const ground = city.grounds.find((ground) => ground.groundId === req.params.groundId);
         if(!ground) {
             return res.status(404).json({message: 'Ground not found.'});
         }
@@ -130,17 +97,9 @@ const getGround = controllerWrapper(
 
 const updateGround = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-              return res.status(404).json({message: "Country not found."})//Not Found
-        }
+        const city = req.city
 
-        const city=await City.findOne({cityId: req.params.cityId}).populate('grounds');
-        if (!city || city.grounds.length == 0) {
-            return res.status(404).json({message: 'City not found or no grounds in the city.'});
-        }
-
-        let ground = city.grounds.find((ground) => ground.groundId === req.params.id);
+        let ground = city.grounds.find((ground) => ground.groundId === req.params.groundId);
         if (!ground) {
             return res.status(404).json({message: 'Ground not found.'});
         }
@@ -214,7 +173,7 @@ const updateGround = controllerWrapper(
 
         await ground.save();
 
-        const updatedGround = await Ground.findOne({groundId: req.params.id});
+        const updatedGround = await Ground.findOne({groundId: req.params.groundId});
 
         res.status(200).json({message: "Ground successfully updated!", updatedGround});
     }, 
@@ -223,17 +182,9 @@ const updateGround = controllerWrapper(
 
 const deleteGround = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-              return res.status(404).json({message: "Country not found."})
-        }
+        const city = req.city
 
-        const city = await City.findOne({cityId: req.params.cityId}).populate('grounds');
-        if (!city) {
-            return res.status(404).json({message: 'City not found'});
-        }
-
-        const groundIndex = city.grounds.indexOf(city.grounds.find(ground => ground.groundId === req.params.id));
+        const groundIndex = city.grounds.indexOf(city.grounds.find(ground => ground.groundId === req.params.groundId));
         if (groundIndex === -1) {
             return res.status(404).json({message: 'Ground not found in the city'});
         }
@@ -241,7 +192,7 @@ const deleteGround = controllerWrapper(
         city.grounds.splice(groundIndex, 1);
         await city.save();
 
-        const ground=await Ground.findOneAndDelete({groundId: req.params.id});
+        const ground=await Ground.findOneAndDelete({groundId: req.params.groundId});
 
         res.status(200).json({message: 'Ground deleted successfully', ground});
     }, 

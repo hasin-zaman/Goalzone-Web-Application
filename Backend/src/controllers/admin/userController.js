@@ -66,14 +66,7 @@ const getAllUsers = controllerWrapper(
 
 const getUser = controllerWrapper(
     async (req, res) => {
-       //parsing string req.params to int as userId is stored as int
-       const userId=parseInt(req.params.userId);
-
-       const user=await User.findOne({userId: userId}).populate("teams._id", "teamId teamName profileImage captain");
-       if(!user){
-           return res.status(404).json({message: "User with id " + userId + " does not exist"})
-       }
-
+       const user=req.user
        res.status(200).json(user); 
     }, 
     "Unable to get user."
@@ -81,13 +74,7 @@ const getUser = controllerWrapper(
 
 const updateUser = controllerWrapper(
     async (req, res) => {
-        //parsing string req.params to int as userId is stored as int
-        const userId=parseInt(req.params.userId);
-
-        let user=await User.findOne({userId: userId});
-        if(!user){
-            return res.status(404).json({message: "User with id " + userId + " does not exist"});//Not Found
-        }
+        const user=req.user
 
         const isValidPassword=passwordValidation(req.body.password);
         if(!isValidPassword) {
@@ -99,9 +86,9 @@ const updateUser = controllerWrapper(
             req.body.password = await bcrypt.hash(req.body.password, 10);
         }
 
-        user=await User.findOneAndUpdate({userId: userId}, req.body, {runValidators: true});
+        user=await User.findOneAndUpdate({userId: parseInt(req.params.userId)}, req.body, {runValidators: true});
 
-        const updatedUser = await User.findOne({userId: userId});
+        const updatedUser = await User.findOne({userId: parseInt(req.params.userId)});
         res.status(200).json({message: "User successfully updated!", updatedUser});
     }, 
     "Unable to update user."
@@ -109,13 +96,9 @@ const updateUser = controllerWrapper(
 
 const deleteUser = controllerWrapper(
     async (req, res) => {
-        //parsing string req.params to int as userId is stored as int
-        const userId=parseInt(req.params.userId);
-
-        const user = await User.findOneAndDelete({userId: userId});
-
+        const user = await User.findOneAndDelete({userId: parseInt(req.params.userId)});
         if(!user) {
-            return res.status(404).json({message: "User with id " + userId + " was not found."});
+            return res.status(404).json({message: "User with id " + parseInt(req.params.userId) + " was not found."});
         }
 
         res.status(200).json({message: "User successfully deleted!", user});

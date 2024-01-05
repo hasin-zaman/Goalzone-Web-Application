@@ -9,25 +9,7 @@ const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const createSlot = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."});
-        }
-
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-            return res.status(404).json({message: "City not found."});
-        }
-
-        const ground=await Ground.findOne({groundId: req.params.groundId});
-        if(!ground){
-            return res.status(404).json({message: "Ground not found."});
-        }
-
-        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
-        if(!day){
-            return res.status(404).json({message: "Day not found."});
-        }
+        const day = req.day;
 
         //checking if ground incharge exists
         const incharge=await User.findOne({userId: req.params.userId});
@@ -112,25 +94,7 @@ const createSlot = controllerWrapper(
 
 const getAllSlots = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."});
-        }
-
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-            return res.status(404).json({message: "City not found."});
-        }
-
-        const ground=await Ground.findOne({groundId: req.params.groundId});
-        if(!ground){
-            return res.status(404).json({message: "Ground not found."});
-        }
-
-        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
-        if(!day){
-            return res.status(404).json({message: "Day not found."})
-        }
+        const day = req.day;
 
         const slots = day.slots;
 
@@ -141,27 +105,9 @@ const getAllSlots = controllerWrapper(
 
 const getSlot = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."});
-        }
-
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-            return res.status(404).json({message: "City not found."});
-        }
-
-        const ground=await Ground.findOne({groundId: req.params.groundId});
-        if(!ground){
-            return res.status(404).json({message: "Ground not found."});
-        }
-
-        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
-        if(!day){
-            return res.status(404).json({message: "Day not found."});
-        }
+        const day = req.day;
   
-        const slot = day.slots.find((slot) => slot.slotId == req.params.id);
+        const slot = day.slots.find((slot) => slot.slotId == req.params.slotId);
   
         if(!slot) {
             return res.status(404).json({message: 'Slot not found.'});
@@ -174,22 +120,9 @@ const getSlot = controllerWrapper(
 
 const updateSlot = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-          return res.status(404).json({message: "Country not found."})
-        }
+        const day = req.day;
 
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-          return res.status(404).json({message: "City not found."})
-        }
-
-        const ground=await Ground.findOne({groundId: req.params.groundId}).populate('slots');
-        if(!ground){
-          return res.status(404).json({message: "Ground not found."})
-        }
-
-        let slot = ground.slots.find((slot) => slot.slotId == req.params.id);
+        let slot = day.slots.find((slot) => slot.slotId == req.params.slotId);
         if(!slot) {
             return res.status(404).json({message: 'Slot not found.'});
         }
@@ -239,7 +172,7 @@ const updateSlot = controllerWrapper(
             return res.status(400).json({ message: 'Maximum allowed gap between start and end time is 2 hours.' });
         }
 
-        const slots=ground.slots;
+        const slots=day.slots;
         for(let i=0; i<slots.length; i++){
             const existingSlot = slots[i];
 
@@ -270,27 +203,9 @@ const updateSlot = controllerWrapper(
 
 const deleteSlot = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-          return res.status(404).json({message: "Country not found."});
-        }
+        const day = req.day;
 
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-          return res.status(404).json({message: "City not found."});
-        }
-
-        const ground=await Ground.findOne({groundId: req.params.groundId});
-        if(!ground){
-          return res.status(404).json({message: "Ground not found."});
-        }
-
-        const day=await Day.findOne({dayId: req.params.dayId}).populate('slots');
-        if(!day){
-            return res.status(404).json({message: "Day not found."});
-        }
-
-        const slotIndex = day.slots.indexOf(day.slots.find(slot => slot.slotId == req.params.id));
+        const slotIndex = day.slots.indexOf(day.slots.find(slot => slot.slotId == req.params.slotId));
         if(slotIndex===-1) {
             return res.status(404).json({message: 'Slot not found in this ground'});
         }
@@ -298,7 +213,7 @@ const deleteSlot = controllerWrapper(
         day.slots.splice(slotIndex, 1);
         await day.save();
 
-        const slot=await Slot.findOneAndDelete({slotId: req.params.id});
+        const slot=await Slot.findOneAndDelete({slotId: req.params.slotId});
 
         res.status(200).json({message: 'Slot successfully deleted!', slot});
     }, 

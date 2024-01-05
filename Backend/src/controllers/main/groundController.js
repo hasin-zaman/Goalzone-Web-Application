@@ -8,15 +8,7 @@ const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const registerGround = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."})
-        }
-
-        const city=await City.findOne({cityId: req.params.cityId});
-        if(!city){
-            return res.status(404).json({message: "City not found."})
-        }
+        const city = req.city;
 
         const user=await User.findOne({userId: req.params.userId});
         if(!user) {
@@ -129,15 +121,7 @@ const registerGround = controllerWrapper(
 
 const getActiveGrounds = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."})
-        }
-
-        const city=await City.findOne({cityId: req.params.cityId}).populate({path: 'grounds', populate: {path: 'incharge'}});
-        if(!city){
-            return res.status(404).json({message: "City not found."})
-        }
+        const city = req.city;
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -155,18 +139,10 @@ const getActiveGrounds = controllerWrapper(
 
 const getActiveGround = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."})
-        }
-
-        const city = await City.findOne({ cityId: req.params.cityId }).populate({path: 'grounds', populate: {path: 'days'}});
-        if(!city) {
-            return res.status(404).json({message: 'City not found.'});
-        }
+        const city = req.city;
   
         const ground = city.grounds.find(
-            (ground) => ground.groundId === req.params.id && ground.status === 'Active'
+            (ground) => ground.groundId === req.params.groundId && ground.status === 'Active'
         );
   
         if(!ground) {
@@ -180,17 +156,9 @@ const getActiveGround = controllerWrapper(
 
 const updateMyGround = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-              return res.status(404).json({message: "Country not found."})//Not Found
-        }
+        const city = req.city;
 
-        const city=await City.findOne({cityId: req.params.cityId}).populate('grounds');
-        if(!city || city.grounds.length == 0) {
-            return res.status(404).json({message: 'City not found or no grounds in the city.'});
-        }
-
-        let ground = city.grounds.find((ground) => ground.groundId === req.params.id && ground.status === 'Active');
+        let ground = city.grounds.find((ground) => ground.groundId === req.params.groundId && ground.status === 'Active');
         if(!ground) {
             return res.status(404).json({message: 'Ground not found.'});
         }
@@ -273,17 +241,9 @@ const updateMyGround = controllerWrapper(
 
 const deactivateGround = controllerWrapper(
     async (req, res) => {
-        const country=await Country.findOne({countryId: req.params.countryId});
-        if(!country){
-            return res.status(404).json({message: "Country not found."});
-        }
-
-        const city = await City.findOne({ cityId: req.params.cityId }).populate('grounds');
-        if(!city) {
-          return res.status(404).json({message: 'City not found.'});
-        }
+        const city = req.city;
   
-        const ground = city.grounds.find((ground) => ground.groundId === req.params.id && ground.status === 'Active');
+        const ground = city.grounds.find((ground) => ground.groundId === req.params.groundId && ground.status === 'Active');
         if(!ground) {
           return res.status(404).json({message: 'Ground not found or not active.'});
         }
