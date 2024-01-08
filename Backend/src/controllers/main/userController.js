@@ -67,7 +67,7 @@ const login = controllerWrapper(
         }
 
         //generating tokens
-        const accessToken=jwt.sign({userId: user.userId, role: user.role}, process.env.SECRET_ACCESS_TOKEN, {expiresIn: "30h"});
+        const accessToken=jwt.sign({userId: user.userId, role: user.role}, process.env.SECRET_ACCESS_TOKEN, {expiresIn: "100h"});
         const refreshToken=jwt.sign({userId: user.userId}, process.env.SECRET_REFRESH_TOKEN);
 
         res.status(200).send({message: "Successfully logged in!", user, accessToken, refreshToken});

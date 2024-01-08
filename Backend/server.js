@@ -6,6 +6,7 @@ const helmet=require('helmet');
 const mongoose=require('mongoose');
 const MainRoutes=require('./src/routes/mainRoutes');
 const AdminRoutes=require('./src/routes/adminRoutes');
+const authentication = require('./src/middlewares/authentication');
 
 app.use(express.json());
 
@@ -34,7 +35,7 @@ mongoose.connect(process.env.MONGO_LINK).then(()=>{
     console.log(error);
 });
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res)=>{
     res.send('Goalzone : Home');
 });
 
@@ -47,6 +48,8 @@ app.get('/health', (req, res) => {
   
     res.status(200).send(data);
 });
+
+app.use(authentication);
 
 app.use('/', MainRoutes);
 

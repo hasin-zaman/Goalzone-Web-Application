@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authentication=require('../middlewares/authentication.js');
 const { checkRole, matchUser }=require('../middlewares/authorization.js');
-const {findOneUser, findOneTeam, findOneCountry, findOneCity, findOneGround, findOneReview, findOneDay, findOneSlot}=require('../middlewares/findOne.js');
+const {findOneUser, findOneTeam, findOneCountry, findOneCity, findOneGround, findOneDay}=require('../middlewares/findOne.js');
 const {signup, login, getProfile, updateMyProfile, deleteMyProfile}=require('../controllers/main/userController');
 const {registerTeam, getActiveTeams, getActiveTeam, updateMyTeam, deleteMyTeam, sendRequest, unsendRequest, approveRequest, declineRequest, leaveTeam}=require('../controllers/main/teamController');
 const {sendMessage}=require('../controllers/main/contactController');
@@ -22,7 +21,7 @@ router.delete('/users/:userId', deleteMyProfile);
 
 //team
 router.post('/teams/:userId', registerTeam);
-router.get('/teams/', getActiveTeams);
+router.get('/teams', getActiveTeams);
 router.get('/teams/:teamId', findOneTeam([
     { path: "captain", select: "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age" },
     { path: "players", select: "userId firstName lastName profileImage mostPreferredPosition secondPreferredPosition age" },

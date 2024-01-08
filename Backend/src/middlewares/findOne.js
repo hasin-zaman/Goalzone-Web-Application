@@ -128,29 +128,29 @@ const findOneGround = (populate, status) => async (req, res, next) => {
   }
 };
 
-const findOneReview = (populate, status) => async (req, res, next) => {
-  try {
-    let query = Review.findOne({ reviewId: req.params.reviewId });
+// const findOneReview = (populate, status) => async (req, res, next) => {
+//   try {
+//     let query = Review.findOne({ reviewId: req.params.reviewId });
 
-    if (status) {
-      query = query.where('status').equals(status);
-    }
+//     if (status) {
+//       query = query.where('status').equals(status);
+//     }
 
-    if (populate) {
-      query = query.populate(populate);
-    }
+//     if (populate) {
+//       query = query.populate(populate);
+//     }
 
-    const review = await query.exec();
-    if (!review) {
-      return res.status(404).json({ message: "Review not found." });
-    }
+//     const review = await query.exec();
+//     if (!review) {
+//       return res.status(404).json({ message: "Review not found." });
+//     }
 
-    req.review = review;
-    next();
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
+//     req.review = review;
+//     next();
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
 
 const findOneDay = (populate, status) => async (req, res, next) => {
   try {
@@ -176,29 +176,29 @@ const findOneDay = (populate, status) => async (req, res, next) => {
   }
 };
 
-const findOneSlot = (populate, status) => async (req, res, next) => {
-  try {
-    let query = Slot.findOne({ slotId: req.params.slotId });
+// const findOneSlot = (populate, status) => async (req, res, next) => {
+//   try {
+//     let query = Slot.findOne({ slotId: req.params.slotId });
 
-    if (status) {
-      query = query.where('status').equals(status);
-    }
+//     if (status) {
+//       query = query.where('status').equals(status);
+//     }
 
-    if (populate) {
-      query = query.populate(populate);
-    }
+//     if (populate) {
+//       query = query.populate(populate);
+//     }
 
-    const slot = await query.exec();
-    if (!slot) {
-      return res.status(404).json({ message: "Slot not found." });
-    }
+//     const slot = await query.exec();
+//     if (!slot) {
+//       return res.status(404).json({ message: "Slot not found." });
+//     }
 
-    req.slot = slot;
-    next();
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
+//     req.slot = slot;
+//     next();
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
 
 const findOneContact = (populate, status) => async (req, res, next) => {
   try {
@@ -224,4 +224,4 @@ const findOneContact = (populate, status) => async (req, res, next) => {
   }
 };
 
-module.exports = {findOneUser, findOneTeam, findOneCountry, findOneCity, findOneGround, findOneReview, findOneDay, findOneSlot, findOneContact};
+module.exports = {findOneUser, findOneTeam, findOneCountry, findOneCity, findOneGround, findOneDay, findOneContact};
