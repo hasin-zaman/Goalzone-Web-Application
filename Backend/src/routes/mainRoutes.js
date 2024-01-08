@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { checkRole, matchUser }=require('../middlewares/authorization.js');
 const {findOneUser, findOneTeam, findOneCountry, findOneCity, findOneGround, findOneDay}=require('../middlewares/findOne.js');
 const {signup, login, getProfile, updateMyProfile, deleteMyProfile}=require('../controllers/main/userController');
 const {registerTeam, getActiveTeams, getActiveTeam, updateMyTeam, deleteMyTeam, sendRequest, unsendRequest, approveRequest, declineRequest, leaveTeam}=require('../controllers/main/teamController');
@@ -49,7 +48,7 @@ router.post('/countries/:countryId/cities/:cityId/grounds/:userId', findOneCount
 router.get('/countries/:countryId/cities/:cityId/grounds', findOneCountry(), findOneCity({path: 'grounds', populate: {path: 'incharge'}}), getActiveGrounds);
 router.get('/countries/:countryId/cities/:cityId/grounds/:groundId', findOneCountry(), findOneCity({path: 'grounds', populate: [{path: 'incharge'}, {path: 'days'}]}), getActiveGround);
 router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId', findOneCountry(), findOneCity('grounds'), updateMyGround);
-router.patch('/countries/:countryId/cities/:cityId/grounds/:groundId', findOneCountry(), findOneCity('grounds'), deactivateGround);
+router.patch('/countries/:countryId/cities/:cityId/grounds/deactivate/:groundId', findOneCountry(), findOneCity('grounds'), deactivateGround);
 
 //review
 router.post('/countries/:countryId/cities/:cityId/grounds/:groundId/reviews/:userId', findOneCountry(), findOneCity(), findOneGround('reviews'), postReview);

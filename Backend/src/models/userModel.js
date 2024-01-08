@@ -5,6 +5,7 @@ const imageValidation = require('../utils/validations/imageValidation');
 const nameValidation = require('../utils/validations/nameValidation');
 const phoneValidation = require('../utils/validations/phoneValidation');
 const Positions = require('../utils/enums/positions');
+const Roles = require('../utils/enums/roles');
 
 const userSchema = mongoose.Schema(
     {
@@ -107,7 +108,7 @@ const userSchema = mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ['Player', 'Captain', 'Ground-in-charge', 'Admin'],
+            enum: Roles,
             required: [true, 'Role is required.']
         },
         mostPreferredPosition: {

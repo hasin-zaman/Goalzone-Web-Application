@@ -1,15 +1,30 @@
-function checkRole(role) {
-    return function (req, res, next) {
-        const user = req.user;
+const checkRole = (req, res, next) => {
+    const role = req.user.role;
 
-        if (user && user.role === role) {
-            next();
-        } 
-        else {
+    const adminRouteRegex = /^\/admin/;
+
+    console.log(adminRouteRegex.test(req.path))
+    if(adminRouteRegex.test(req.path)) {
+        if(role!='Admin') {
             res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
         }
-    };
+    } 
+    next();
 }
+
+// function checkRole(role) {
+//     return function (req, res, next) {
+        
+
+
+//         if (user && user.role === role) {
+//             next();
+//         } 
+//         else {
+//             res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
+//         }
+//     };
+// }
 
 function matchUser() {
     return function (req, res, next) {

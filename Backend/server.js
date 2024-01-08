@@ -7,6 +7,7 @@ const mongoose=require('mongoose');
 const MainRoutes=require('./src/routes/mainRoutes');
 const AdminRoutes=require('./src/routes/adminRoutes');
 const authentication = require('./src/middlewares/authentication');
+const { checkRole } = require('./src/middlewares/authorization');
 
 app.use(express.json());
 
@@ -50,6 +51,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use(authentication);
+
+// app.use(checkRole);
 
 app.use('/', MainRoutes);
 

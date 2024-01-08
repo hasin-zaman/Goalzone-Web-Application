@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { checkRole, matchUser }=require('../middlewares/authorization.js');
 const {findOneUser, findOneTeam, findOneCountry, findOneCity, findOneGround, findOneContact}=require('../middlewares/findOne.js');
 const {addUser, getAllUsers, getUser, updateUser, deleteUser}=require('../controllers/admin/userController');
 const {addTeam, getAllTeams, getTeam, updateTeam, deleteTeam}=require('../controllers/admin/teamController');

@@ -3,7 +3,7 @@ const isPublicRoute = require('../utils/helpers/isPublicRoute');
 
 const authentication = (req, res, next) => {
 
-    if(isPublicRoute(req.path)) {
+    if(isPublicRoute(req.path, req.method)) {
         next();
     }
     else {
