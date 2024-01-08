@@ -1,6 +1,7 @@
 const User=require('../../models/userModel');
 const Team=require('../../models/teamModel');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
+const paginationParams = require('../../utils/helpers/paginationParams');
 
 const registerTeam = controllerWrapper(
     async (req, res) => {
@@ -41,10 +42,7 @@ const registerTeam = controllerWrapper(
 
 const getActiveTeams = controllerWrapper(
     async (req, res) => {
-        const page=parseInt(req.query.page) || 1;
-        const limit=parseInt(req.query.limit) || 10;
-
-        const skip=(page-1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const teams = await Team.find({status: 'Active'}).sort({createdAt: -1}).skip(skip).limit(limit).populate('captain', 'userId firstName lastName');
 

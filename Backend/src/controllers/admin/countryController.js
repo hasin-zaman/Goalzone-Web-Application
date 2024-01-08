@@ -1,4 +1,5 @@
 const Country=require('../../models/countryModel');
+const paginationParams = require('../../utils/helpers/paginationParams');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const addCountry = controllerWrapper(
@@ -14,10 +15,7 @@ const addCountry = controllerWrapper(
 
 const getAllCountries = controllerWrapper(
     async (req, res) => {
-        const page=parseInt(req.query.page) || 1;
-        const limit=parseInt(req.query.limit) || 10;
-
-        const skip=(page-1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const countries = await Country.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('cities');
 

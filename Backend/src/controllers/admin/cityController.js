@@ -1,6 +1,7 @@
 const Country = require('../../models/countryModel');
 const City = require('../../models/cityModel');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
+const paginationParams = require('../../utils/helpers/paginationParams');
 
 const addCity = controllerWrapper(
     async (req, res) => {
@@ -24,11 +25,7 @@ const addCity = controllerWrapper(
 const getAllCities = controllerWrapper(
     async (req, res) => {
         const country = req.country;
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-
-        const skip = (page - 1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const cities = country.cities.slice(skip, skip + limit);
         res.status(200).json({page, totalCities: country.cities.length, totalPages: Math.ceil(country.cities.length/limit), cities});

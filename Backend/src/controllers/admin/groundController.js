@@ -1,8 +1,7 @@
-const Country=require('../../models/countryModel');
-const City=require('../../models/cityModel');
 const Ground=require('../../models/groundModel');
 const Day=require('../../models/dayModel');
 const User=require('../../models/userModel');
+const paginationParams = require('../../utils/helpers/paginationParams');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const addGround = controllerWrapper(
@@ -68,11 +67,7 @@ const addGround = controllerWrapper(
 const getAllGrounds = controllerWrapper(
     async (req, res) => {
         const city = req.city;
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-
-        const skip = (page - 1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const grounds = city.grounds.slice(skip, skip + limit);
     

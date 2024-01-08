@@ -1,12 +1,10 @@
 const Contact=require('../../models/contactModel');
+const paginationParams = require('../../utils/helpers/paginationParams');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const getAllMessages = controllerWrapper(
     async (req, res) => {
-        const page=parseInt(req.query.page) || 1;
-        const limit=parseInt(req.query.limit) || 10;
-
-        const skip=(page-1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const messages = await Contact.find().sort({createdAt: -1}).skip(skip).limit(limit);
 

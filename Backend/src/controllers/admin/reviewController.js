@@ -1,17 +1,11 @@
-const Country=require('../../models/countryModel');
-const City=require('../../models/cityModel');
-const Ground=require('../../models/groundModel');
 const Review=require('../../models/reviewModel');
+const paginationParams = require('../../utils/helpers/paginationParams');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const getAllReviews = controllerWrapper(
     async (req, res) => {
         const ground = req.ground;
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-
-        const skip = (page - 1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const reviews = ground.reviews.slice(skip, skip + limit);
 
@@ -40,8 +34,6 @@ const approveReview = controllerWrapper(
             return res.status(400).json({message: "Request body is not allowed."});
         }
 
-        const ground =  req.ground;
-
         const review = await Review.findOneAndUpdate({reviewId: req.params.reviewId}, {status: 'Approved'}, {runValidators: true});
         if(!review) {
             return res.status(404).json({message: "Review not found."});
@@ -59,8 +51,6 @@ const disapproveReview = controllerWrapper(
         if(Object.keys(req.body).length !== 0) {
             return res.status(400).json({message: "Request body is not allowed."});
         }
-
-        const ground =  req.ground;
 
         const review = await Review.findOneAndUpdate({reviewId: req.params.reviewId}, {status: 'Disapproved'}, {runValidators: true});
         if(!review) {

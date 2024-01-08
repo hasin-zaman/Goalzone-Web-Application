@@ -1,8 +1,6 @@
-const Country=require('../../models/countryModel');
-const City=require('../../models/cityModel');
-const Ground=require('../../models/groundModel');
 const Review=require('../../models/reviewModel');
 const User=require('../../models/userModel');
+const paginationParams = require('../../utils/helpers/paginationParams');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const postReview = controllerWrapper(
@@ -48,11 +46,7 @@ const postReview = controllerWrapper(
 const getApprovedReviews = controllerWrapper(
     async (req, res) => {
         const ground = req.ground;
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-
-        const skip = (page - 1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const reviews = ground.reviews.filter(review=>(review.status==='Approved' || review.status==='Pending-approval')).slice(skip, skip + limit);
 

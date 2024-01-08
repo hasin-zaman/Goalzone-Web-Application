@@ -1,7 +1,3 @@
-const Country=require('../../models/countryModel');
-const City=require('../../models/cityModel');
-const Ground=require('../../models/groundModel');
-const Day=require('../../models/dayModel');
 const Slot=require('../../models/slotModel');
 const User=require('../../models/userModel');
 const { isValidTimeFormat, isValidTimeGap, isSlotClashing }=require('../../utils/validations/slotValidation');

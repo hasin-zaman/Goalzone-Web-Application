@@ -1,14 +1,11 @@
 const City = require('../../models/cityModel');
+const paginationParams = require('../../utils/helpers/paginationParams');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const getActiveCities = controllerWrapper(
     async (req, res) => {
         const country = req.country
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
-
-        const skip = (page - 1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const cities = country.cities.filter((city=>city.status==="Active")).slice(skip, skip + limit);
 

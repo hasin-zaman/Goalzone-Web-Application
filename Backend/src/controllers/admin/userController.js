@@ -1,6 +1,7 @@
 const bcrypt=require('bcrypt');
 const User=require('../../models/userModel');
 const passwordValidation=require('../../utils/validations/passwordValidation');
+const paginationParams = require('../../utils/helpers/paginationParams');
 const controllerWrapper = require('../../utils/wrappers/controllerWrapper');
 
 const addUser = controllerWrapper(
@@ -49,10 +50,7 @@ const addUser = controllerWrapper(
 
 const getAllUsers = controllerWrapper(
     async (req, res) => {
-        const page=parseInt(req.query.page) || 1;
-        const limit=parseInt(req.query.limit) || 10;
-
-        const skip=(page-1) * limit;
+        const { page, limit, skip } = paginationParams(req.query);
 
         const users = await User.find({}).sort({createdAt: -1}).skip(skip).limit(limit);
 
