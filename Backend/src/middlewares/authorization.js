@@ -1,40 +1,41 @@
+const isAdminRoute = require("../utils/helpers/isAdminRoute");
+const isAuthorizedRoute = require("../utils/helpers/isAuthorizedRoute");
+const isUserSpecificRoute = require("../utils/helpers/isUserSpecificRoute");
+
 const checkRole = (req, res, next) => {
-    const role = req.user.role;
+    const { isAuthorized, roles } = isAuthorizedRoute(req.path, req.method);
 
-    const adminRouteRegex = /^\/admin/;
-
-    console.log(adminRouteRegex.test(req.path))
-    if(adminRouteRegex.test(req.path)) {
-        if(role!='Admin') {
+    if(isAuthorized) {
+        if(roles.includes(req.user.role)) {
+            next();
+        }
+        else {
             res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
         }
-    } 
-    next();
+    }
+    else if(isAdminRoute(req.path)) {
+        if(req.user.role=='Admin') {
+            next();
+        }
+        else {
+            res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
+        }
+    }
+    else {
+        next();
+    }
 }
 
-// function checkRole(role) {
-//     return function (req, res, next) {
-        
-
-
-//         if (user && user.role === role) {
-//             next();
-//         } 
-//         else {
-//             res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
-//         }
-//     };
-// }
-
-function matchUser() {
-    return function (req, res, next) {
-        if (req.user && req.user.userId==req.params.userId) {
+const matchUser = (req, res, next) => {
+    if(isUserSpecificRoute(req.path, req.method) || isAdminRoute(req.path)) {
+        console.log(req.user.userId, req.params)
+        if (req.user.userId==req.params.userId) {
             next();
         } 
         else {
             res.status(403).json({ message: 'Access denied. Action not allowed for the user.' });
         }
-    };
+    } 
 }
 
 module.exports={

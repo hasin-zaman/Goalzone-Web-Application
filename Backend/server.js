@@ -7,14 +7,15 @@ const mongoose=require('mongoose');
 const MainRoutes=require('./src/routes/mainRoutes');
 const AdminRoutes=require('./src/routes/adminRoutes');
 const authentication = require('./src/middlewares/authentication');
-const { checkRole } = require('./src/middlewares/authorization');
+const authorization = require('./src/middlewares/authorization');
+const Methods = require('./src/utils/enums/methods');
 
 app.use(express.json());
 
 app.use(
     cors({
         origin: process.env.ORIGIN,
-        methods: ['GET','POST','PUT','PATCH','DELETE'],
+        methods: [Methods.POST, Methods.GET, Methods.PUT, Methods.PATCH, Methods.DELETE],
         allowedHeaders: ['Content-Type','Authorization'],
         credentials: true
     })
@@ -52,7 +53,9 @@ app.get('/health', (req, res) => {
 
 app.use(authentication);
 
-// app.use(checkRole);
+app.use(authorization.checkRole);
+
+app.use(authorization.matchUser);
 
 app.use('/', MainRoutes);
 

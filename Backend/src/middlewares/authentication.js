@@ -1,12 +1,10 @@
 const jwt=require('jsonwebtoken');
-const isPublicRoute = require('../utils/helpers/isPublicRoute');
+const isPrivateRoute = require('../utils/helpers/isPrivateRoute');
+const isAdminRoute = require('../utils/helpers/isAdminRoute');
 
 const authentication = (req, res, next) => {
 
-    if(isPublicRoute(req.path, req.method)) {
-        next();
-    }
-    else {
+    if(isPrivateRoute(req.path, req.method) || isAdminRoute(req.path)) {
         const authHeader=req.headers['authorization'];
         const token=authHeader && authHeader.split(' ')[1];//Header is made up of 'Bearer Token'
 
@@ -21,6 +19,9 @@ const authentication = (req, res, next) => {
             req.user=user;
             next();
         });
+    }
+    else {
+        next();
     }
 }
 
