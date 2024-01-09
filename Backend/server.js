@@ -1,5 +1,4 @@
 const express=require('express');
-const app=express();
 require('dotenv').config();
 const cors=require('cors');
 const helmet=require('helmet');
@@ -9,6 +8,8 @@ const AdminRoutes=require('./src/routes/adminRoutes');
 const authentication = require('./src/middlewares/authentication');
 const authorization = require('./src/middlewares/authorization');
 const Methods = require('./src/utils/enums/methods');
+
+const app=express();
 
 app.use(express.json());
 
@@ -60,3 +61,7 @@ app.use(authorization.matchUser);
 app.use('/', MainRoutes);
 
 app.use('/admin', AdminRoutes);
+
+app.all('*', (req, res) => {
+    res.status(404).send('404 | Route Not Found.')
+});
