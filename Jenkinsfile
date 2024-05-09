@@ -6,7 +6,8 @@ pipeline {
         IMAGE_TAG = "hasinzmn/goalzone:${BUILD_NUMBER}"
     }
 
-    stage('Build and Push Backend Image') {
+    stages {
+        stage('Build and Push Backend Image') {
             steps {
                 script {
                     docker.build("backend-image")
@@ -15,9 +16,8 @@ pipeline {
                     }
                 }
             }
-    }
+        }
 
-    stages {
         stage('Build and Push Frontend Image') {
             steps {
                 script {
