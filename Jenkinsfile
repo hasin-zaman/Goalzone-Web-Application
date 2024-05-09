@@ -10,16 +10,24 @@ pipeline {
     }
     agent any
 
-    stages {   
-        stage('Build Docker Images') {
+    stages {
+        stage('Build Docker images') {
             steps {
-                echo 'Building Docker Image...'                
                 script {
-                    dockerImageBackend = docker.build("${dockerimagebe}","./Backend")
-                    dockerImageFrontend = docker.build("${dockerimagefe}","./Frontend")
-                }                          
+                    sh 'docker build . -t hasinzmn/goalzone-backend ./Backend'
+                    sh 'docker build . -t hasinzmn/goalzone-frontend ./Frontend'
+                }
             }
-        }
+        }   
+        // stage('Build Docker Images') {
+        //     steps {
+        //         echo 'Building Docker Image...'                
+        //         script {
+        //             dockerImageBackend = docker.build("${dockerimagebe}","./Backend")
+        //             dockerImageFrontend = docker.build("${dockerimagefe}","./Frontend")
+        //         }                          
+        //     }
+        // }
         stage('Push Docker Images') {             
             steps {
                 echo 'Pushing Docker Image...'          
