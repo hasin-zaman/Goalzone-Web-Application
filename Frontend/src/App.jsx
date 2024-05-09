@@ -40,6 +40,7 @@ const RegisterGroundCities = lazyWithFallback(() => import('./routes/main/bookin
 import Grounds from './routes/main/booking/grounds';
 import Ground from './routes/main/booking/ground';
 const RegisterGround = lazyWithFallback(() => import('./routes/main/booking/registerGround'));
+import Payment from './routes/main/booking/payment';
 
 // admin routes
 const AdminHome = lazyWithFallback(() => import('./routes/admin/home'));
@@ -117,6 +118,7 @@ function App() {
           <Route path="/countries/:countryId/cities/:cityId/grounds" element={<Grounds />} />
           <Route path="/countries/:countryId/cities/:cityId/grounds/:groundId" element={<Ground />} />
           <Route path="/register/countries/:countryId/cities/:cityId/grounds" element={<RegisterGround />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/faqs" element={<Faqs />} />

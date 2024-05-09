@@ -10,8 +10,8 @@ const reviewSchema = mongoose.Schema(
         rating: {
             type: Number,
             trim: true,
-            min: [1, 'Minimum rating of 1 is allowed.'],
-            max: [10, 'Maximum rating of 10 is allowed.'],
+            // min: [1, 'Minimum rating of 1 is allowed.'],
+            // max: [10, 'Maximum rating of 10 is allowed.'],
             required: [true, 'Rating is required'],
             validate: {
                 validator: function (value) {

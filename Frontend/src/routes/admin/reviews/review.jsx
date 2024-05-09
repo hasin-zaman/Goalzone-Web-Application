@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import formatDate from '../../../utils/formatDate';
 import { Paper, Button } from '@mui/material';
 import Drawer from '../../../components/admin/drawer';
-import Header from '../../../components/admin/Header';
+import Header from '../../../components/admin/header';
 import ProfileImage from '../../../components/global/profileImage';
 
 const Label = styled.label`

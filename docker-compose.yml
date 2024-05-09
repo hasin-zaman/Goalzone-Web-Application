@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./Frontend   # Path to the frontend directory containing Dockerfile
+    ports:
+      - "5173:5173"     # Map port 5173 of the host to port 5173 of the frontend container
+    depends_on:
+      - backend         # Ensure backend service is started before frontend
+    networks:
+      - goalzone-network
+
+  backend:
+    build: ./Backend    # Path to the backend directory containing Dockerfile
+    ports:
+      - "3000:3000"     # Map port 3000 of the host to port 3000 of the backend container
+    networks:
+      - goalzone-network
+
+networks:
+  goalzone-network:
+    driver: bridge

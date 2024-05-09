@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { Paper } from '@mui/material';
 import Button from '@mui/material/Button';
 import Drawer from '../../../components/admin/drawer';
-import Header from '../../../components/admin/Header';
+import Header from '../../../components/admin/header';
 import CustomTextField from '../../../components/admin/customTextField';
 import RadioField from '../../../components/admin/radioField';
 

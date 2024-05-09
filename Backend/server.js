@@ -56,9 +56,9 @@ app.use(authentication);
 
 app.use(authorization.checkRole);
 
-app.use(authorization.matchUser);
+// app.use(authorization.matchUser);
 
-app.use('/', MainRoutes);
+app.use('', MainRoutes);
 
 app.use('/admin', AdminRoutes);
 

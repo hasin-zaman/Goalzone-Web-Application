@@ -26,7 +26,7 @@ export default function NavBar() {
         <Logo style={{width: "70px", height: "100px", margin: "15px 0 0 20px"}}/>
         <ul className='list first'>
             <NavLink to="/" className='navLink'><li className='navBox'><AiFillHome className='icon' /> Home</li></NavLink>
-            <NavLink to="/countries" className='navLink'><li className='navBox'><FaCalendarCheck className='icon'/> Book Ground</li></NavLink>
+            <NavLink to="/countries/pak/cities" className='navLink'><li className='navBox'><FaCalendarCheck className='icon'/> Book Ground</li></NavLink>
             <NavLink to="/teams" className='navLink'><li className='navBox'><FontAwesomeIcon icon={faUserGroup} style={{ }}/> Find Team</li></NavLink>
             <NavLink to="/about" className='navLink navDropdown' tabIndex="1"><li className='navBox'><FaInfoCircle className='icon' /> About us
             <IoMdArrowDropdown className='icon' id='dropdown' /></li></NavLink>

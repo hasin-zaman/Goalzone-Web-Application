@@ -5,7 +5,7 @@ import Footer from '../../components/main/footer';
 import NavBar from '../../components/main/navbar';
 import contact from '../../assets/contact.jpg';
 import axios from 'axios';
-import MUITextField from '../../components/global/MUITextField';
+import MUITextField from '../../components/global/muiTextField';
 import MUIButton from '../../components/global/muiButton';
 
 const Main = styled.div`

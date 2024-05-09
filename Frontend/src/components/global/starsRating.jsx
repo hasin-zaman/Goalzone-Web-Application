@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tooltip, Zoom } from '@mui/material';
-import Star from './Star';
+import Star from './star';
 
 const StarsRating = ({ totalStars, starSize, style, onChange, disableHover, disableSelection, selected, loggedIn }) => {
   const [selectedStars, setSelectedStars] = useState(0);

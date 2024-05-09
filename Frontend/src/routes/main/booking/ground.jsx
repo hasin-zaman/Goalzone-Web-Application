@@ -6,10 +6,10 @@ import { Paper, Typography, Skeleton, Tooltip, Zoom, Fab } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
 import ProfileImage from '../../../components/global/profileImage';
-import MUITextField from '../../../components/global/MUITextField';
+import MUITextField from '../../../components/global/muiTextField';
 import HeadingWithDividers from '../../../components/global/headingWithDividers';
 import MUIButton from '../../../components/global/muiButton';
-import MUIModal from '../../../components/global/muiModal';
+// import MUIModal from '../../../components/global/muiModal';
 import StarsRating from '../../../components/global/starsRating';
 import formatDate from '../../../utils/formatDate';
 import MUITooltip from '../../../components/global/muiTooltip';
@@ -420,7 +420,7 @@ export default function Ground() {
                       <StarsRating totalStars={10} starSize={15} selected={review.rating} style={{margin: '0 0 10px 0', display: 'inline-block'}} disableHover={true} disableSelection={true} />
                       {review.user && review.user.userId==sessionStorage.getItem('userId') ? 
                       <span style={{display: 'flex', flexDirection: 'row', float: 'right', position: 'relative', bottom: '10px'}}>
-                      <MUIModal button={<MUITooltip title='Edit Review.' color='primary' icon='edit' />}>
+                      {/* <MUIModal button={<MUITooltip title='Edit Review.' color='primary' icon='edit' />}>
                         <form onSubmit={(e) => handleUpdateReview(e, review)}>
                           <Typography style={{fontSize: '24px', fontWeight: '700', color: '#121212', margin: '0 0 10px 0'}}>Edit Review</Typography>
                           <StarsRating totalStars={10} starSize={15} selected={review.rating} onChange={handleRatingChange} style={{margin: '0 0 10px 0', display: 'inline-block'}} />
@@ -429,7 +429,7 @@ export default function Ground() {
                             <MUIButton type='submit' size='small' color='primary' title={isLoading ? "Updating..." : "Update"} />
                           </div>
                         </form>
-                      </MUIModal>
+                      </MUIModal> */}
                       <MUITooltip title='Delete Review.' color='error' icon='delete' onClick={() => handleOpenDeleteDialog(review)} />
                       </span>
                       : 

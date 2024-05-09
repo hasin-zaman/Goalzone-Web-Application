@@ -28,7 +28,6 @@ const checkRole = (req, res, next) => {
 
 const matchUser = (req, res, next) => {
     if(isUserSpecificRoute(req.path, req.method) || isAdminRoute(req.path)) {
-        console.log(req.user.userId, req.params)
         if (req.user.userId==req.params.userId) {
             next();
         } 
@@ -36,6 +35,9 @@ const matchUser = (req, res, next) => {
             res.status(403).json({ message: 'Access denied. Action not allowed for the user.' });
         }
     } 
+    else {
+        next();
+    }
 }
 
 module.exports={

@@ -55,6 +55,7 @@ const signup = controllerWrapper(
 
 const login = controllerWrapper(
     async (req, res) => {
+        console.log(123)
         const user = await User.findOne({ email: req.body.email });
         if(!user){
             return res.status(404).json({message: "Incorrect email or user does not exist."});

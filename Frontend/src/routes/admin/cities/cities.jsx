@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import formatDate from '../../../utils/formatDate';
 import Drawer from '../../../components/admin/drawer';
-import Header from '../../../components/admin/Header';
+import Header from '../../../components/admin/header';
 import MUITooltip from '../../../components/global/muiTooltip';
 import AlertDialog from '../../../components/global/alertDialog';
 

@@ -8,7 +8,7 @@ import MUIPagination from '../../../components/global/muiPagination';
 import MUITooltip from '../../../components/global/muiTooltip';
 import AlertDialog from '../../../components/global/alertDialog';
 import Drawer from '../../../components/admin/drawer';
-import Header from '../../../components/admin/Header';
+import Header from '../../../components/admin/header';
 
 const Page = styled.div`
   width: 85%;

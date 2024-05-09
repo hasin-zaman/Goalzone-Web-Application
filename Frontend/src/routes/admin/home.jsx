@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Paper } from '@mui/material';
 import Drawer from '../../components/admin/drawer';
-import Header from '../../components/admin/Header';
+import Header from '../../components/admin/header';
 
 const Page = styled.div`
   width: 100%;
